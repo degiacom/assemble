@@ -1,0 +1,30 @@
+; generated with Assemble.py, by Matteo Degiacomi and Valentina Erastova, 2014
+
+[ defaults ]
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
+               1               2             yes       0     0.5
+
+[ atomtypes ]
+;name   at.num  mass     charge  ptype  sigma     epsilon
+     CH1       6  13.0186   0.000      A     0.465     0.08314462
+     CH2       6  14.0266   0.000      A     0.395   0.3824652566
+     CH3       6  15.0345   0.000      A     0.375   0.8148172858
+     DC2       6  14.0266   0.000      A    0.3675     0.70672928
+     DC0       6   12.011   0.000      A     0.385    0.166289242
+     DC1       6  13.0186   0.000      A     0.373   0.3907797187
+
+#include "PI1.itp"
+#include "PI2.itp"
+#include "PI3.itp"
+#include "PI4.itp"
+#include "PI5.itp"
+
+[ system ]
+PI-example
+
+[ molecules ]
+PI1 110
+PI2 128
+PI3 98
+PI4 111
+PI5 93

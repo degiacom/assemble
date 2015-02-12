@@ -1,0 +1,31 @@
+integrator               = md
+nsteps                   = 100000
+dt			 = 0.002
+nstenergy                = 1000
+nstxout	                 = 1000
+nstvout	                 = 1000
+energygrps               = System
+; cut-offs at 1nm
+rlist                    = 1.2
+nstlist                  = 10
+coulombtype              = cut-off
+rcoulomb                 = 1.2              
+vdw-type                 = cut-off
+rvdw                     = 1.2
+; set temperature to 300K
+tcoupl                   = V-rescale
+tc-grps                  = System 
+tau-t                    = 1.0  
+ref-t                    = 350   
+; and pressure to 1 bar
+;pcoupl = no
+pcoupl			 = Parrinello-Rahman
+pcoupltype               = isotropic
+ref-p			 = 5
+tau-p			 = 5 
+compressibility          = 9.5e-5
+; generate initial velocities
+gen-vel                  = no
+; OPTIONS FOR BONDS     
+constraints              = none
+

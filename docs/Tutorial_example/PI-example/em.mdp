@@ -1,0 +1,14 @@
+integrator               = steep
+nsteps                   = 5000
+emtol                    = 1000
+emstep                   = 0.01
+nstxout                  = 1 
+nstenergy                = 1
+rlist                    = 1.2
+pbc                      = xyz
+coulombtype              = cut-off
+rcoulomb                 = 1.2              
+vdw-type                 = cut-off
+rvdw                     = 1.2
+constraints              = none
+

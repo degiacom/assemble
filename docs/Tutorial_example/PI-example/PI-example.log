@@ -1,0 +1,57 @@
+>                 Assemble v1.0                     <
+> (c) 2014, Matteo Degiacomi and Valentina Erastova <
+
+> loading force field /Users/Valentina/Dropbox/V_and_Ma/assemble/database/forcefield/trappe.ff.txt...
+
+> Preparing molecules database...
+>> loading PDB ./database/cis-PI-monomer.pdb
+>> loading topology ./database/cis-PI-monomer.txt
+>> loading PDB ./database/trans-PI-monomer.pdb
+>> loading topology ./database/trans-PI-monomer.txt
+
+> generating polymer PI1...
+>> sequence: TTTCTCTC
+>> writing PDB file PI1.pdb
+>> writing Gromacs coordinates file PI1.gro
+>> writing Gromacs topology file PI1.itp
+
+> generating polymer PI2...
+>> sequence: CCTCTCCTT
+>> writing PDB file PI2.pdb
+>> writing Gromacs coordinates file PI2.gro
+>> writing Gromacs topology file PI2.itp
+
+> generating polymer PI3...
+>> sequence: TCCTTCC
+>> writing PDB file PI3.pdb
+>> writing Gromacs coordinates file PI3.gro
+>> writing Gromacs topology file PI3.itp
+
+> generating polymer PI4...
+>> sequence: CTCTCCTC
+>> writing PDB file PI4.pdb
+>> writing Gromacs coordinates file PI4.gro
+>> writing Gromacs topology file PI4.itp
+
+> generating polymer PI5...
+>> sequence: CCTCCT
+>> writing PDB file PI5.pdb
+>> writing Gromacs coordinates file PI5.gro
+>> writing Gromacs topology file PI5.itp
+
+> generating system...
+
+> polymer concentrations in box:
+>> PI1: 20.3703703704 percent
+>> PI2: 23.7037037037 percent
+>> PI3: 18.1481481481 percent
+>> PI4: 20.5555555556 percent
+>> PI5: 17.2222222222 percent
+
+> monomers distribution in box:
+>> C: 54.9711815562 percent
+>> T: 45.0288184438 percent
+
+> number average degree of polymerization: 7.71111111111
+
+> All done! Thank you for using Assemble! <
