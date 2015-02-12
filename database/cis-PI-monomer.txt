@@ -1,0 +1,30 @@
+[ mapping ]
+   CD0    DC0  
+   CD1    DC1 
+   AA     CH2    
+   CS3    CH3  
+   ZZ     CH2 
+[ bonds ]
+   ZZ   +AA      s-bn 
+   AA    CD1     s-bn 
+   ZZ    CD0     s-bn 
+   CS3   CD0     s-bn 
+   CD1   CD0     d-bn 
+[ angles ]
+   AA    -ZZ    -CD0     s-an
+   ZZ    +AA    +CD1     s-an
+   ZZ    CD0   CS3     d-an
+   ZZ    CD0   CD1     d-an
+   CS3   CD0   CD1     d-an
+   AA    CD1   CD0     d-an
+[ impropers ]
+   AA    CD1   CD0   ZZ     c-id
+   AA    CD1   CD0   CS3    t-id
+[ dihedrals ]
+   +AA    ZZ    CD0   CD1    d-dh
+   -ZZ    AA    CD1   CD0    d-dh
+   CD0   ZZ    +AA    +CD1    s-dh
+[ nterminal ]
+AA 		CH3	
+[ cterminal ]
+ZZ 		CH3	

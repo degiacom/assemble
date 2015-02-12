@@ -1,0 +1,33 @@
+[ mapping ]
+   VD1    DC1 
+   VD2    DC2 
+   ZZ     CH1 
+   AA     CH2 
+  [ bonds ]
+   AA    ZZ      s-bn 
+   ZZ    VD1     s-bn 
+   +AA   ZZ      s-bn
+   VD1   VD2     d-bn 
+  [ angles ]
+   ZZ    AA    -ZZ     s-an
+   AA    ZZ    VD1     sb-an  
+   AA    ZZ    +AA     sb-an  
+   VD1   ZZ    +AA     sb-an  
+  -ZZ    AA    ZZ      s-an
+   ZZ    VD1   VD2     d-an
+  -CD0   -ZZ   AA      s-an    
+   ZZ   +AA   +CD1     s-an
+   [ dihedrals ]
+   AA    ZZ    VD1   VD2    d-dh
+  +AA    ZZ    VD1   VD2    d-dh
+  -ZZ    AA    ZZ    VD1    s-dh
+   VD1   ZZ   +AA    +ZZ    s-dh
+   VD1   ZZ   +AA    +CD1   s-dh
+  -CD0  -ZZ    AA    ZZ     s-dh
+   AA    -ZZ    -CD0   -CD1    d-dh
+  +AA    ZZ    AA   -ZZ     s-dh
+ [ nterminal ]
+AA 		CH3
+[ cterminal ]
+ZZ 		CH2
+AA    ZZ    VD1     s-an  

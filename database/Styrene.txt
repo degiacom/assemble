@@ -1,0 +1,53 @@
+[ mapping ]
+   BZ1    DC1 
+   BZ2    DC2  
+   BZ3    DC2  
+   BZ4    DC2  
+   BZ5    DC2  
+   BZ6    DC2  
+   ZZ     CH1  
+   AA     CH2  
+  [ bonds ]
+   AA    ZZ      s-bn 
+   ZZ    BZ1     s-bn 
+   +AA   ZZ      s-bn
+   AA   -ZZ      s-bn
+   BZ1   BZ6    s-bn
+   BZ1   BZ2    s-bn
+   BZ2   BZ3    s-bn
+   BZ3   BZ4    s-bn
+   BZ4   BZ5    s-bn
+   BZ5   BZ6    s-bn
+  [ angles ]
+   ZZ    AA    -ZZ     s-an
+   AA    ZZ    BZ1     sb-an     
+   AA    ZZ    +AA     sb-an    
+   BZ1   ZZ    +AA     sb-an     
+  -ZZ    AA    ZZ      s-an
+   BZ2   BZ1   ZZ      sb-an
+   BZ6   BZ1   ZZ      sb-an
+   BZ1   BZ2   BZ3     s-an
+   BZ6   BZ1   BZ2     s-an
+   BZ2   BZ3   BZ4     s-an
+   BZ3   BZ4   BZ5     s-an
+   BZ4   BZ5   BZ6     s-an
+   BZ5   BZ6   BZ1     s-an
+  -CD0   -ZZ   AA      s-an    
+   ZZ   +AA   +CD1     s-an
+  [ dihedrals ]
+  +AA    ZZ    AA   -ZZ     s-dh
+   AA    ZZ    BZ1   BZ2    s-dh
+  +AA    ZZ    BZ1   BZ2    s-dh
+   BZ1   BZ2   BZ3   BZ4    s-dh
+   BZ2   BZ3   BZ4   BZ5    s-dh
+   BZ3   BZ4   BZ5   BZ6    s-dh
+   BZ4   BZ5   BZ6   BZ1    s-dh
+   BZ5   BZ6   BZ1   BZ2    s-dh
+   BZ6   BZ1   BZ2   BZ3    s-dh
+  -ZZ    AA    ZZ    BZ1    s-dh
+   BZ1   ZZ   +AA    +ZZ    s-dh
+[ nterminal ]
+AA 		CH3	
+[ cterminal ]
+ZZ 		CH2
+AA    ZZ    BZ1     s-an  	
