@@ -19,7 +19,6 @@
    BZ4   BZ5    s-bn
    BZ5   BZ6    s-bn
   [ angles ]
-   ZZ    AA    -ZZ     s-an
    AA    ZZ    BZ1     sb-an     
    AA    ZZ    +AA     sb-an    
    BZ1   ZZ    +AA     sb-an     
@@ -27,7 +26,7 @@
    BZ2   BZ1   ZZ      sb-an
    BZ6   BZ1   ZZ      sb-an
    BZ1   BZ2   BZ3     s-an
-   BZ6   BZ1   BZ2     s-an
+   BZ6   BZ1   BZ2     sb-an
    BZ2   BZ3   BZ4     s-an
    BZ3   BZ4   BZ5     s-an
    BZ4   BZ5   BZ6     s-an
