@@ -1,0 +1,17 @@
+mode gromacs
+database  ./database/database.txt
+ForceField ./database/forcefield/trappe.ff.txt
+output_folder .
+system_name system
+box_grid_shape 5 9 12
+chain PI1 TTTCTCTC
+concentration PI1 20
+chain PI2 CCTCTCCTT
+concentration PI2 20
+chain PI3 TCCTTCC
+concentration PI3 20
+chain PI4 CTCTCCTC
+concentration PI4 20
+chain PI5 CCTCCT
+concentration PI5 20
+molecule PI1 PI2 PI3 PI4 PI5
