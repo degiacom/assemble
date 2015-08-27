@@ -3,4 +3,4 @@ C ./database/cis-PBD-monomer.pdb ./database/cis-PBD-monomer.txt
 T ./database/trans-PBD-monomer.pdb ./database/trans-PBD-monomer.txt
 V ./database/vinyl-PBD-monomer.pdb ./database/vinyl-PBD-monomer.txt
 t ./database/trans-PI-monomer.pdb ./database/trans-PI-monomer.txt
-S ./database/Styrene.pdb ./database/Styrene.txt
+S ./database/Styrene.pdb ./database/hydrog-Styrene.txt
