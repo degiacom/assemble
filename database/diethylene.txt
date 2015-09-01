@@ -1,0 +1,24 @@
+[ mapping ]
+   AA     CH2 
+   CD1    CH2 
+   CD0    CH2 
+   ZZ     CH2 
+[ bonds ]
+   AA    CD1     s-bn 
+   CD1   CD0     s-bn  
+   CD0   ZZ      s-bn 
+   ZZ   +AA      s-bn 
+[ angles ]
+   AA    CD1   CD0    s-an
+   CD1   CD0   ZZ     s-an
+   CD0   ZZ   +AA     s-an
+   ZZ   +AA   +CD1    s-an
+[ dihedrals ]
+   AA    CD1   CD0   ZZ     s-dh
+   CD1   CD0   ZZ   +AA     s-dh
+   CD0   ZZ   +AA   +CD1    s-dh
+   ZZ   +AA   +CD1  +CD0     s-dh
+[ nterminal ]
+   AA 	 CH3	
+[ cterminal ]
+   ZZ    CH3	
