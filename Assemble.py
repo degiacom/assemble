@@ -143,12 +143,14 @@ def run(infile):
     
     polymers=[]
     for m in params.molecule:        
-        #generate polymer
-        poly=Polymer(db,ff,m,params.mode)
-        poly.clash_thresh=params.clash_thresh
-        poly.make(params.chain[m])
-        
+
         try:
+
+            #generate polymer
+            poly=Polymer(db,ff,m,params.mode)
+            poly.clash_thresh=params.clash_thresh
+            poly.make(params.chain[m])
+        
             if params.mode=="pdb":
                 poly.write_polymer(typef="pdb",mypath=folder)
             elif params.mode=="gromacs":
@@ -183,6 +185,6 @@ def run(infile):
     
 if __name__=="__main__":
     #get database filename
-    #infile="input_tmp"
-    infile=str(sys.argv[2])
+    #infile="infile"
+    infile=str(sys.argv[1])
     run(infile)    

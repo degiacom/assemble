@@ -50,6 +50,7 @@ class MainWindow(wx.Frame):
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
         self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
+        
 
         #panels
         self.I=InputData(self)
@@ -66,7 +67,7 @@ class MainWindow(wx.Frame):
         box.Add(self.S, 0, wx.EXPAND | wx.ALL, 3 )
         box.Add(self.make, 0, wx.ALIGN_CENTER | wx.ALL, 3 )
         self.SetSizer(box)
-        self.SetSize((700,600))
+        self.SetSize((800,700))
         self.Centre()
 
         # bind events to menu items
@@ -217,6 +218,7 @@ class MainWindow(wx.Frame):
         if self.P.lc.GetItemCount()==1:
             self.P.lc.SetStringItem(0,4,str(100.0))  
         
+        
         else:
             conc=0
             for i in xrange(0,self.P.lc.GetItemCount(),1):
@@ -260,11 +262,11 @@ class MainWindow(wx.Frame):
             self.errorPopup("problem in input file!\n"%e, "ERROR!")
             return
 
-        #try:
-        A.run(fname)
-        #except Exception, e:
-        #    self.errorPopup("polymer generation failed!\n%s"%e, "ERROR!")
-        #    return
+        try:
+            A.run(fname)
+        except Exception, e:
+            self.errorPopup("polymer generation failed!\n%s"%e, "ERROR!")
+            return
             
         #os.remove(dbname)
         os.remove(fname)
@@ -408,8 +410,9 @@ class InputData(wx.Panel):
             try:
                 self.parent.db.load(self.setdatabase.GetValue(), "gromacs")
             except IOError,e:
-                self.parent.errorPopup("Error in database file loading!\n%s"%e,"ERROR!")
-                raise IOError("")
+                error="Error in database file loading!\n%s"%e
+                self.parent.errorPopup(error,"ERROR!")
+                raise IOError(error)
             
             pos=0    
             lines=sorted(self.parent.db.molecules.keys())
@@ -515,7 +518,7 @@ class DatabaseEditor(wx.Dialog):
     def __init__(self, parent, params=-1):
         wx.Dialog.__init__(self, parent,title="Database Editor",style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE,size=(300,150))
 
-        self.SetSizeHints(300,150, maxH = 150)
+        self.SetSizeHints(300,200, maxH = 300)
 
         self.dirname=parent.dirname
         self.params=params
@@ -802,9 +805,9 @@ class SystemOut(wx.Panel):
 
 class PolymerEditor(wx.Dialog):
     def __init__(self, parent,params=-1):
-        wx.Dialog.__init__(self, parent,title="Polymer Editor",style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE|wx.TAB_TRAVERSAL,size=(300,300))
+        wx.Dialog.__init__(self, parent,title="Polymer Editor",style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE|wx.TAB_TRAVERSAL,size=(400,500))
 
-        self.SetSizeHints(300,300)
+        self.SetSizeHints(400,500)
 
         self.params=params
         self.parent=parent

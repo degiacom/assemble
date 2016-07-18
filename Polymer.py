@@ -173,7 +173,7 @@ class Polymer(object):
                     angle_val_tail=self.ff.get_angle(a[keep[0],3])
                 except:
                     #print "ERROR: angle type %s not found in force field"%a[0,3]                
-                    raise IOError("angle type %s not found in force field"%a[keep[0],3])                
+                    raise IOError("angle type %s not found in force field"%a[keep[0],3])         
 
                 
                 #compute hooking point position for current molecule
@@ -302,7 +302,7 @@ class Polymer(object):
             
             m_new.set_xyz(crds_new)
 
-            coor_bond=m_new.atomselect("*","*",headname)[0]
+            #coor_bond=m_new.atomselect("*","*",headname)[0]
             
             '''
             if debug: #DEBUG: print positions of HOOKS IN A SEPARATE FILE

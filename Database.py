@@ -13,6 +13,7 @@
 
 from Molecule import *
 import logging
+import os
 
 class Database(object):
 
@@ -40,13 +41,16 @@ class Database(object):
             if len(w[0])>1:
                 raise IOError("found %s identifier in database file %s.\nOne letter code expected!"%(w[0],infile))
             
+            if not os.path.isfile(w[1]):
+                raise IOError("PDB file %s not found for molecule %s"%(w[1],w[0]))
+            
             try:
                 self.logger.info(">> loading PDB %s"%w[1])
                 m=Molecule()
-                m.import_pdb(w[1],mode)
+                m.import_pdb(w[1], mode)
                 
             except IOError:
-                raise IOError("Could not load PDB file %s for molecule %s"%(w[1],w[0]))
+                raise IOError("loading of PDB file %s failed for molecule %s"%(w[1],w[0]))
 
             try:
                 if mode=="gromacs":
