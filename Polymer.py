@@ -341,7 +341,7 @@ class Polymer(object):
         self.set_xyz(crds)
         
         
-    def write_polymer(self,typef="pdb",mypath="."):
+    def write_polymer(self,typef="pdb", mypath="."):
                 
         #renumber atoms index and resid, set same chain name to all polymer
     
@@ -349,7 +349,7 @@ class Polymer(object):
     
         f_out = open("%s/%s.pdb"%(mypath, self.molname), 'w')
 
-        f_out.write("REMARK generated with Assemble.py, by Matteo Degiacomi and Valentina Erastova, 2014\n")
+        f_out.write("REMARK generated with Assemble.py, by Matteo Degiacomi and Valentina Erastova, 2014-2016\n")
         f_out.write("REMARK sequence: %s\n"%self.chain)
 
         index=1    
@@ -388,6 +388,7 @@ class Polymer(object):
                 pos.append([data_list[i][5],data_list[i][6],data_list[i][7]]) #store atom position
 
         return np.array(pos)
+
 
     #push atom coordinates in all molecules composing the polymer (suppose length matching)
     def set_xyz(self,crds):
@@ -536,7 +537,7 @@ class Polymer(object):
                            
                 if b0!=False and b1!=False and b2!=False and b3!=0:
                     vals_text='  '.join(self.ff.bonded[d[j][x][4]].astype(str))
-                    f_out.write("%5s %6s %6s %6s %6s %8s\n"%(b0,b1,b2,b3,self.ff.fftype[2],vals_text))
+                    f_out.write("%5s %6s %6s %6s %6s %8s\n"%(b0,b1,b2,b3, self.ff.fftype[2], vals_text))
          
         #write impropers lines
         #f_out.write("\n [ impropers ] \n")

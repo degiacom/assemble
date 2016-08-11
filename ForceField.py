@@ -55,7 +55,7 @@ class ForceField(object):
 
         line=f.readline()
 
-        #extract bonded potential constants  
+        #extract bonded potential constants 
         while line:
             w=line.split()
             
@@ -140,4 +140,4 @@ if __name__=="__main__":
     print FF.bonded
     #print FF.nonbonded
     #print FF.combination
-    #print FF.fftype
+    print FF.fftype
