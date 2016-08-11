@@ -1,0 +1,128 @@
+;Bond types
+;
+;   TRAPPE uses fixed bond length, force constant is arbitrary, LINCS should be used in simulation
+;   angles in aromatic rings (a-an) are treated as rigid, force constant arbitrary again.
+;
+;   kJ/mol/rad2 vs kJ/mol/nm2 :
+;   maximum angle = 3.141 rad = 180 deg
+;   maximum distance = 0.5 nm (CG long bond!) 
+;   kJ/mol/rad2 should be 6^2=36 times larger to have similar stiffness
+;   for simplicity a value of 1.500e+05 shows stiff geometries in Trappe
+;   as ring potentials are applied for all combinations, same value effectively gives higher stiffness
+;
+;   unit conversion
+;   K/rad2  -- * R_ideal/1000 -->  kJ/mol/rad2
+;
+;
+ [ bondedtypes ]
+; ; bonds  angles  dihedrals  impropers
+     1       1          3          2
+;
+;
+ ;==================================
+ ; Bond type code
+ ; 	
+ ; name	    [nm]   [kJ/mol/nm2]	
+; Trappe4 paper	
+; CHx-CHy
+s-bn        0.154  1.500e+05
+; CHx=CHy
+d-bn        0.133  1.500e+05
+; CHx(aro)-CHy(aro)
+a-bn        0.140  1.500e+05
+;
+ ;==================================
+ ;  Bond-angle type code
+ ;
+ ; name	     [deg]   [kJ/mol/rad2]
+; Trappe4 paper
+; CHx-(CH2)-CHy
+s-an         114      519.65388125
+; CHx-(CH)-CHy
+sb-an        112      519.65388125
+; 
+d-an         119.7    585.504421082
+; 
+a-an	     120      1.500e+05
+;
+;
+ ;==================================
+ ;  Improper func=2 (improper dihedral, zeta [deg], k [kJ/mol/rad2])
+ ;
+ ; conflicting data between chem-siepmann.oit.umn.edu/siepmann/trappe/index.html and the Trappe 4 paper
+ ;  same function, prefactor and unit for improper torsional, but value differs by factor of 2, is 26800 K/rad2 (222 kJ/mol/rad2) online and 13400 K/rad2 (111 kJ/mol/rad2) in paper.
+ ; 
+ ; VALENTINAS
+ ; name		[deg]   [kJ/mol/rad2]
+c-id           0.0   206.19866008
+t-id           180.0 222.82758428
+ ; JOS' CALCULATION
+ ;c-id            0.0      103.099
+ ;t-id            180.0    111.413
+; keep benzene ring flat                  (in output substitute "3 0.0" with "2 0.0")
+ring-id         0.     1.500e+05	
+;
+;
+ ;==================================
+ ; Dihedrals func=3 (proper dihedral, Ryckaert-Bellemans dihedral)
+ ;
+ ;       	C0   	C1		C2		C3		C4		C5
+ ; name	   [kJ/mol]  	[kJ/mol]  	[kJ/mol]  	[kJ/mol]   	[kJ/mol]   	[kJ/mol]
+ ;s-dh    8.3988133	-16.79626	1.135052	 26.34488	-0.003174263	-0.01791070
+ ;d-dh    2.2726503	 7.763124	1.815770	-9.410107	 0.007521849	 0.01903455
+ ;d2-dh    2.2726503	 7.763124	1.815770	-9.410107	 0.007521849	 0.01903455
+ ;d1-dh    2.2726503	 7.763124	1.815770	-9.410107	 0.007521849	 0.01903455
+;
+; Trappe4 paper
+; CHx-(CH2)-(CH2)-CHy
+s-dh 	8.39740576	16.786414	1.133933	-26.31775	-0.0		 0.0
+; CHx-(CH2)-(CH)=CHy
+d-dh 	2.27052639	-7.758103	1.825368	9.3867492	-0.0		 0.0
+d21dh	2.27052639	-7.75810299	1.825368	9.386749	-0.0		-0.0
+;
+; Trappe2 paper
+; CHx-(CH2)-(CH2)-CHy
+s22dh 	8.39740576	16.786414	1.133933	-26.31775	-0.0		 0.0
+; CHx-(CH2)-(CH)-CHy
+s21dh	3.28622693	7.4421516	1.859956	-14.675775	-0.0		-0.0
+; CHx-(CH2)-(C)-CHy
+s20dh	3.83540032	11.506201	0.0		-15.341601	-0.0		-0.0
+; CHx-(CH)-(CH)-CHy
+s11dh	3.28622693	7.4421516	1.859956	-14.675775	-0.0		-0.0
+;
+ ;==================================
+ ; Dihedrals func=5 (proper dihedral, Fourier dihedral)
+ ; C0 (given in Trappe) is unimportant as only slope matters
+ ;  	    C1		C2		C3		C4		
+ ; name	   [kJ/mol]  	[kJ/mol]  	[kJ/mol]  	[kJ/mol]   	
+ ; 
+;
+ ;==================================
+ ; Dihedrals func=1  (proper dihedral, periodic type) (in output substitute "3 300.0" with "1 300.0" as Assemble! wrongly assumes type 3)
+ ; 
+ ; name		[deg]   [kJ/mol]    multipl.
+ ; name         phi_s   k              n       
+a1-id		300.    1.38851        2
+a2-id		180.    1.089196       2
+;
+;
+;
+;
+ ;==================================
+ ;Non-Bonded
+[ atomtypes ]
+ ;name  at.num   mass      charge  ptype       sigma     epsilon
+   DC0    6 	12.011     0.000     A       0.385    0.166289242
+   DC1    6 	13.0186    0.000     A       0.373    0.3907797187
+   DC2    6 	14.0266    0.000     A       0.3675   0.70672928
+   CH1    6 	13.0186    0.000     A       0.465    0.08314462
+   CH2    6 	14.0266    0.000     A       0.395    0.3824652566
+   CH3    6 	15.0345    0.000     A       0.375    0.8148172858
+   aCH    6     13.0186    0.000     A       0.3695   0.4198808
+   aC     6     12.011     0.000     A       0.388    0.1746039
+;
+;==================================
+;combination rules
+[ defaults ]
+ ; nbfunc	comb-rule	gen-pairs	fudgeLJ	fudgeQQ
+1               2               yes             0           0.5

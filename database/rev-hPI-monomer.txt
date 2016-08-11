@@ -1,0 +1,31 @@
+; reverted hPI monomer
+[ mapping ]
+   CD0    CH1  
+   CD1    CH2 
+   ZZ     CH2    
+   CS3    CH3  
+   AA     CH2 
+[ bonds ]
+   ZZ   +AA      s-bn 
+   ZZ    CD1     s-bn 
+   AA    CD0     s-bn 
+   CS3   CD0     s-bn 
+   CD1   CD0     s-bn 
+[ angles ]
+  +AA    ZZ    CD1     s-an
+   CD0   AA   -ZZ      s-an
+   AA    CD0   CS3     sb-an
+   AA    CD0   CD1     sb-an
+   CS3   CD0   CD1     sb-an
+   ZZ    CD1   CD0     s-an
+[ dihedrals ]
+    ZZ    CD1   CD0   AA     s20dh
+    ZZ    CD1   CD0   CS3    s20dh
+   -ZZ    AA    CD0   CS3    s20dh
+   -ZZ    AA    CD0   CD1    s20dh
+   +AA    ZZ    CD1   CD0    s22dh
+   +CD0  +AA    ZZ    CD1    s22dh
+[ nterminal ]
+AA 		CH3	
+[ cterminal ]
+ZZ 		CH3

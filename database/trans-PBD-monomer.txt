@@ -1,3 +1,4 @@
+; angles closer to monomer, improves transferability
 [ mapping ]
    CD1    DC1 
    CD0    DC1 
@@ -9,16 +10,16 @@
    ZZ    CD0     s-bn 
    CD1   CD0     d-bn  
   [ angles ]
-  AA    -ZZ   -CD0     s-an
-   ZZ    +AA   +CD1     s-an
+  -ZZ    AA    CD1     s-an
+   CD0   ZZ   +AA      s-an
    ZZ    CD0   CD1     d-an
    AA    CD1   CD0     d-an
   [ impropers ]
    AA    CD1   CD0   ZZ   t-id
   [ dihedrals ]
-   +AA    ZZ    CD0   CD1    d-dh
-   -ZZ    AA   CD1   CD0    d-dh
-   CD0   ZZ    +AA   +CD1    s-dh
+  +AA    ZZ   CD0   CD1    d-dh
+  -ZZ    AA   CD1   CD0    d-dh
+   CD0   ZZ  +AA   +CD1    s-dh
 [ nterminal ]
 AA 		CH3	
 [ cterminal ]

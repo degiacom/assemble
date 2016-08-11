@@ -1,8 +1,13 @@
 c ./database/cis-PI-monomer.pdb ./database/cis-PI-monomer.txt
 t ./database/trans-PI-monomer.pdb ./database/trans-PI-monomer.txt
+
 C ./database/cis-PBD-monomer.pdb ./database/cis-PBD-monomer.txt
 T ./database/trans-PBD-monomer.pdb ./database/trans-PBD-monomer.txt
+
 V ./database/vinyl-PBD-monomer.pdb ./database/vinyl-PBD-monomer.txt
+
 S ./database/Styrene.pdb ./database/Styrene.txt
-s ./database/hydrog-Styrene.pdb ./database/hydrog-Styrene.txt
-E ./database/diethylene.pdb ./database/diethylene.txt
+e ./database/diethylene.pdb ./database/diethylene.txt
+
+H ./database/hPI-monomer.pdb ./database/hPI-monomer.txt
+r ./database/rev-hPI-monomer.pdb ./database/rev-hPI-monomer.txt

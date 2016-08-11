@@ -1,0 +1,33 @@
+===== how to set up interactions that different monomers are compatible: ===========
+
+rules to makes interactions with neighbours as transferable as possible (monomer chain of different types still account for all interactions properly):
+ - apply interactions symmetrically when possible (angles)
+ - when directional choice has to be made: pick forward direction "+"-direction (bond, dihedral)
+ - all side chain interactions/ special monomer interactions have to be accounted for by monomer itself, should not rely on same monomer type as neighbours (dihedrals)
+
+
+===== how to change direction of monomer (head/tail) ================================
+
+--------------------*pdb file
+swap AA and ZZ names
+
+-------------------[mapping]
+swap AA and ZZ names
+
+-------------------[bonds]
+swap AA and ZZ names
+but leave  "  ZZ   +AA   " unchanged
+
+-------------------[angles]
+swap AA and ZZ names
+" swap + and - "
+
+-------------------[dihedrals]
+swap AA and ZZ names
+" swap + and - "
+" swap + with "no+" in forward looking dihedral"
+
+-------------------[nterminal], [cterminal]
+unchanged
+
+
