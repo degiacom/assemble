@@ -25,57 +25,66 @@ class System:
         
     #generate a random distribution of molecules in a box, given their percentages
     def make_box(self, dim, percentage):
-
-
-        '''
-        print percentage
-
-        #normalize to 100
+        
+        #normalize to 100 percent
         test=0           
-        for i in percentage.keys():
-            test+=float(percentage[i][0])
+        for l in percentage:
+            test+=float(l[1])
 
-        print test
-        
-        for i in percentage.keys():
-            v=percentage[i][0]
-            percentage[i][0]=str((float(v)/test)*100.0)
-        
-        print percentage
-        '''
+        for i in xrange(len(percentage)):
+            v=float(percentage[i][1])
+            percentage[i][1]=(v/test)*100.0
         
         if len(dim)!=3:
             raise IOError("ERROR: expected 3 values for dimensions")
         
         length=dim[0]*dim[1]*dim[2]
         
-        c=[]
         #make roulette array
         roulette=[percentage[0][1]]
+        t=[percentage[0][1]]
         for r in xrange(1,len(percentage),1):
+            t.append(percentage[r][1])
             roulette.append(roulette[r-1]+percentage[r][1])
     
-        #pick a random monomer according to desired percentages
-        counter=np.zeros(len(roulette))
-        for x in xrange(0,length,1):
-            rnd=np.random.rand(1)[0]*100 
-            index=0
-            while True:
-                if roulette[index]>rnd:
-                    break
-                else:
-                    index+=1
-            c.append(percentage[index][0])
-            counter[index]+=1
+        target=np.array(t)
+        error=100000.0
+        cbest=np.array([])
+        #attempt distributing molecules in box according to desired concentration
+        #keep best of 100 attemps
+        for i in xrange(1,100):
+
+            c=[]
     
-        #chain completed, report produced percentages:
-        counter/=float(length)
-        counter*=100.0
+            #pick a random monomer according to desired percentages
+            counter=np.zeros(len(roulette))
+            for x in xrange(0,length,1):
+                rnd=np.random.rand(1)[0]*100
+                index=0
+                while True:
+                    if roulette[index]>rnd:
+                        break
+                    else:
+                        index+=1
+                c.append(percentage[index][0])
+                counter[index]+=1
+    
+            #chain completed, report produced percentages:
+            counter/=float(length)
+            counter*=100.0
+        
+            tmp_err=np.sum((counter-target)**2)
+        
+            if tmp_err<error:
+                error=tmp_err
+                cbest=np.array(c)
+                counterbest=counter.copy()
+        
         self.logger.info("> polymer concentrations in box:")
-        for x in xrange(0,len(counter),1):
-            self.logger.info(">> %s: %s percent"%(percentage[x][0],counter[x]))
+        for x in xrange(0,len(counterbest),1):
+            self.logger.info(">> %s: %s percent"%(percentage[x][0],counterbest[x]))
                       
-        return np.reshape(np.array(c),dim)
+        return np.reshape(cbest,dim)
 
         
     def create_system(self,mypath="."):

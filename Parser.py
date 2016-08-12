@@ -182,9 +182,9 @@ class Parser:
 			cnt+=val
 			p2.append([m,val])
 		
-		if cnt!=100:	
-			print "ERROR: sum of provided percentages equal to %s. Should be 100!"%cnt
-			return -1
+		#if cnt!=100:	
+		#	print "ERROR: sum of provided percentages equal to %s. Should be 100!"%cnt
+		#	return -1
 			
 		self.concentration=p2
 		

@@ -20,6 +20,7 @@ from System import *
 import sys, os
 
 import logging
+from astropy.io.ascii.tests.common import CWD
 
 
 def make_chain(length, percentage):
@@ -184,7 +185,10 @@ def run(infile):
     logger.removeHandler(ch)
     
 if __name__=="__main__":
-    #get database filename
-    #infile="infile"
+
+    cwd=os.getcwd()
+    assembled=os.path.abspath(os.path.dirname(str(sys.argv[0])))
+    os.environ["ASSEMBLEPATH"]="%s;%s"%(cwd,assembled)
+    
     infile=str(sys.argv[1])
-    run(infile)    
+    run(infile)

@@ -21,17 +21,50 @@ class Database(object):
         self.molecules={}
         self.logger=logging.getLogger('assemble')
 
-    def load(self,infile,mode):
-        
+
+    def findfile(self, infile):
+
+        #search path for relative paths:
+        #1. working directory of database file
+        #2. current working directory
+        #3. assemble home directory
+        mypath=os.environ["ASSEMBLEPATH"].split(";")
+
+        #print mypath
+
+        #find pdbfile 
+        fname=""
+        if os.path.isabs(infile): #absolute path, just check existence
+            if os.path.isfile(infile):
+                fname=infile
+        else: #relative path, look for first hit in different folders
+            for p in mypath:
+                test="%s\\%s"%(p,infile)
+                if os.path.isfile(test):
+                    fname=test
+                    break
+
+        return fname
+    
+
+    def load(self, infile, mode):
+             
         files=[]
         
         self.logger.info("\n> Preparing molecules database...")
-        f = open(infile, 'r+')
+        try:
+            f = open(infile, 'r+')
+        except:
+            raise IOError("database file %s not found!"%infile)
+    
+        #append folder of database file at the beginning of search path
+        thisdir=os.path.dirname(os.path.abspath(infile))
+        os.environ["ASSEMBLEPATH"]="%s;%s"%(thisdir, os.environ["ASSEMBLEPATH"])
         
         for line in f:  
             
             w=line.split()
-            
+       
             if len(w)==0: #to new line if line is empty
                 continue
             
@@ -40,23 +73,29 @@ class Database(object):
            
             if len(w[0])>1:
                 raise IOError("found %s identifier in database file %s.\nOne letter code expected!"%(w[0],infile))
-            
-            if not os.path.isfile(w[1]):
+           
+            fname=self.findfile(w[1])            
+            if fname=="":
                 raise IOError("PDB file %s not found for molecule %s"%(w[1],w[0]))
             
             try:
-                self.logger.info(">> loading PDB %s"%w[1])
+                self.logger.info(">> loading PDB %s"%fname)
                 m=Molecule()
-                m.import_pdb(w[1], mode)
+                m.import_pdb(fname, mode)
                 
             except IOError:
-                raise IOError("loading of PDB file %s failed for molecule %s"%(w[1],w[0]))
+                raise IOError("loading of PDB file %s failed for molecule %s"%(fname,w[0]))
 
             try:
                 if mode=="gromacs":
                     if len(w)==3:
-                        self.logger.info(">> loading topology %s"%w[2])
-                        m.import_topology(w[2])
+ 
+                        fname=self.findfile(w[2])            
+                        if fname=="":
+                            raise IOError("topology file %s not found for molecule %s"%(w[2],w[0]))
+
+                        self.logger.info(">> loading topology %s"%fname)
+                        m.import_topology(fname)
                     else:
                         raise IOError("in gromacs mode, a topology file is expected for molecule %s!"%w[0])
 

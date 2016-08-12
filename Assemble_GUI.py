@@ -15,6 +15,7 @@
 
 
 import os
+import sys
 import wx
 from Database import Database
 from ForceField import ForceField
@@ -32,7 +33,11 @@ class MainWindow(wx.Frame):
         wx.Frame.__init__(self, parent, title=title, size=(700,600))
         self.CreateStatusBar() # A Status bar in the bottom of the window
         self.SetBackgroundColour("white")
-
+        
+        cwd=os.getcwd()
+        assembled=os.path.abspath(os.path.dirname(str(sys.argv[0])))
+        os.environ["ASSEMBLEPATH"]="%s;%s"%(cwd,assembled)
+        
         #initialize datastructures
         self.db=Database()
         self.ff=ForceField()
@@ -229,10 +234,10 @@ class MainWindow(wx.Frame):
                     self.errorPopup("concentration of polymer %s must be\na number between 0 and 100!"%self.P.lc.GetItem(itemId=i,col=0).GetText(), "ERROR!")
                     return  
             
-            if conc!=100:
+            #if conc!=100:
                 #self.errorPopup("sum of polymer concentrations is equal to %s (expected 100)\nTreating concentrations as ratios!"%conc, "WARNING!")                             
-                self.errorPopup("sum of polymer concentrations\n should be equal to 100 percent!", "ERROR!")
-                return            
+                ##self.errorPopup("sum of polymer concentrations\n should be equal to 100 percent!", "ERROR!")
+                ##return            
              
         #check box size information consistency                      
         try:
@@ -666,7 +671,7 @@ class Polymers(wx.Panel):
         self.lc.InsertColumn(1, 'chain')
         self.lc.InsertColumn(2, 'length')
         self.lc.InsertColumn(3, 'components (%)')
-        self.lc.InsertColumn(4, 'concent. (%)')
+        self.lc.InsertColumn(4, 'concentr.')
         self.lc.SetColumnWidth(0, 65)
         self.lc.SetColumnWidth(1, 230)
         self.lc.SetColumnWidth(2, 60)
@@ -876,7 +881,7 @@ class PolymerEditor(wx.Dialog):
         self.lblchain = wx.StaticText(self, label="chain:")
         self.editchain = wx.TextCtrl(self, value="")
 
-        self.lblconc = wx.StaticText(self, label="concentr.(%):")
+        self.lblconc = wx.StaticText(self, label="concentr.:")
         self.editconc = wx.TextCtrl(self, value="", size=(40,-1))
      
 
