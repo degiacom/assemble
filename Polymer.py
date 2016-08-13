@@ -24,10 +24,35 @@ class Polymer(object):
         self.molname=molname
         self.mode=mode        
         self.clash_thresh=0.9
-        
+        self.chain=""
         self.search_grid=self._make_search_grid()
         
         self.logger=logging.getLogger('assemble')
+ 
+
+    '''
+    def get_mass(self):
+        
+        if len(self.chain)==0:
+            raise Exception("no chain provided!")
+        
+        mass=0
+        
+        try:
+            for c in self.chain:
+                mol=self.db.molecules[c]
+                mapping=mol.topology.mapping
+                for l in mol.data[:,1]:
+                    atomtype=mapping[np.where(mapping==l)[0],1]
+                    mass+=self.ff.nonbonded[atomtype][1]
+                
+            return mass
+        
+        except:
+            raise Exception("could not calculate polymer mass!")
+        
+        return mass
+    ''' 
         
     def make(self,chain):
         
@@ -61,7 +86,6 @@ class Polymer(object):
                 head_hook=deepcopy(m_new.data[m_new.data[:,0]==int(m_new.limit['head_hook']),5:8][0])
 
             else:
-                
                 #get head and tail atomnames
                 tailname=m.topology.tail[0]
                 headname=m_new.topology.head[0]
