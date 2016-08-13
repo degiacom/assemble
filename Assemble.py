@@ -20,7 +20,6 @@ from System import *
 import sys, os
 
 import logging
-from astropy.io.ascii.tests.common import CWD
 
 
 def make_chain(length, percentage):
