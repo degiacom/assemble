@@ -24,16 +24,29 @@ class System:
         self.logger=logging.getLogger('assemble')
         
     #generate a random distribution of molecules in a box, given their percentages
-    def make_box(self, dim, percentage):
+    def make_box(self, dim, data_in, use_fractional_mass):
+        
+        #prepare data
+        names=[]
+        v=[]
+        for d in data_in:
+            names.append(d[0])
+            v.append(d[1])
+        
+        #if reference percentage is a fractional mass, tweak it using monomers mass
+        if use_fractional_mass:
+            percentage=self.convert_concentration(np.array(v), get_fractional=True)
+        else:
+            percentage=np.array(v)
         
         #normalize to 100 percent
         test=0           
         for l in percentage:
-            test+=float(l[1])
+            test+=float(l)
 
         for i in xrange(len(percentage)):
-            v=float(percentage[i][1])
-            percentage[i][1]=(v/test)*100.0
+            #v=float(percentage[i])
+            percentage[i]=(percentage[i]/test)*100.0
         
         if len(dim)!=3:
             raise IOError("ERROR: expected 3 values for dimensions")
@@ -41,11 +54,11 @@ class System:
         length=dim[0]*dim[1]*dim[2]
         
         #make roulette array
-        roulette=[percentage[0][1]]
-        t=[percentage[0][1]]
+        roulette=[percentage[0]]
+        t=[percentage[0]]
         for r in xrange(1,len(percentage),1):
-            t.append(percentage[r][1])
-            roulette.append(roulette[r-1]+percentage[r][1])
+            t.append(percentage[r])
+            roulette.append(roulette[r-1]+percentage[r])
     
         target=np.array(t)
         error=100000.0
@@ -66,7 +79,7 @@ class System:
                         break
                     else:
                         index+=1
-                c.append(percentage[index][0])
+                c.append(names[index])
                 counter[index]+=1
     
             #chain completed, report produced percentages:
@@ -79,18 +92,58 @@ class System:
                 error=tmp_err
                 cbest=np.array(c)
                 counterbest=counter.copy()
+
+        print counterbest
+
+        #if reference percentage is a fractional mass, tweak it using monomers mass
+        if use_fractional_mass:
+            perc=self.convert_concentration(counterbest, get_fractional=False) #convert into percentage
+            perc/=np.sum(perc)
+            perc*=100.0
+            mw=counterbest.copy() #this is already a fractional mass
+        else:
+            perc=counterbest.copy()
+            mw=self.convert_concentration(counterbest, get_fractional=True)
+            mw/=np.sum(mw)
+            mw*=100.0
         
-        self.logger.info("> polymer concentrations in box:")
+        self.logger.info("> polymer units in box:")
         for x in xrange(0,len(counterbest),1):
-            self.logger.info(">> %s: %s percent"%(percentage[x][0],counterbest[x]))
-        
+            self.logger.info(">> %s: %s percent"%(names[x],perc[x]))
+                      
+                      
+        self.logger.info("\n> polymers fractional weight:")
+        for x in xrange(0,len(counterbest),1):
+            self.logger.info(">> %s: %s percent"%(names[x],mw[x]))
+                      
+      
         return np.reshape(cbest,dim)
 
         
+    #if get_fractional=True, percentage is edited using monomers mass
+    #if get_fractional=False, fractional mass is converted into percentage
+    def convert_concentration(self, c, get_fractional=True):
+        m=[]
+        for x in xrange(0,len(self.polymers),1):
+            m.append(self.polymers[x].mass)
+        allmasses=np.array(m)
+        allmasses/=np.sum(allmasses)
+
+        for x in xrange(0,len(allmasses),1):
+            if get_fractional:   
+                rescaled=c[x]/allmasses[x]
+            else:   
+                rescaled=c[x]*allmasses[x]
+            
+            c[x]=rescaled
+
+        return c
+        
+        
     def create_system(self,mypath="."):
 
-        ### CREATE BOX ###
-        self.systembox=self.make_box(self.params.box_grid_shape, self.params.concentration)
+        ### CREATE BOX ###                         
+        self.systembox=self.make_box(self.params.box_grid_shape, self.params.concentration, use_fractional_mass=False)
 
         #get maximal box between existing polymers, to define voxel size
         voxel_size=np.array([0.,0.,0.])
@@ -169,30 +222,6 @@ class System:
             cnt=len(self.systembox[self.systembox==name])
             contmols.append([name,cnt])
    
-  
-        # print weight concentration
-        masspoly=[]
-        for x in xrange(0,len(self.polymers),1):
-            masspoly.append(self.polymers[x].get_mass_2())
-
-        weighted=[]
-        for x in xrange(0,len(masspoly),1):
-            weighted.append(float(masspoly[x])*float(contmols[x][1]))
-	
-        weightfrac=[]
-        for x in xrange(0,len(masspoly),1):
-            weightfrac.append(weighted[x]/sum(weighted))
-
-        self.logger.info("\n> polymer weight concentrations in box:")
-        for x in xrange(0,len(contmols),1):
-            self.logger.info(">> %s: %s weight percent"%(contmols[x][0],weightfrac[x]))
-
-        # print number of molecules in box
-        self.logger.info("\n> number of molecules in box:")
-        for x in xrange(0,len(contmols),1):
-            self.logger.info(">> %s: %s "%(contmols[x][0],contmols[x][1]))
-
-
         #counters needed for index file creation
         index_full=1 #atom counter without wrapping
         index_per_mol=1 #atom counter per molecule type (for pretty formatting)
@@ -256,9 +285,6 @@ class System:
         minbox=np.min(np.array(minpos),axis=0)
         maxbox=np.max(np.array(maxpos),axis=0)
         box=maxbox-minbox
-
-        # print total number of beads in box
-        self.logger.info("\n> total number of beads in box: %s", index_full-1)
 
         self.logger.info("\n> box size: %10.5f x %10.5f x %10.5f nm^3"%(box[0],box[1],box[2]))
 

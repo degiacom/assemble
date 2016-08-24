@@ -14,6 +14,7 @@
 import numpy as np
 from copy import deepcopy
 import logging
+from ForceField import ForceField
 
 class Polymer(object):
 
@@ -27,10 +28,12 @@ class Polymer(object):
         self.chain=""
         self.search_grid=self._make_search_grid()
         
+        self.mass=0
+        
         self.logger=logging.getLogger('assemble')
  
 
-    '''
+    #in gromacs mode, calculate mass of chain
     def get_mass(self):
         
         if len(self.chain)==0:
@@ -38,50 +41,24 @@ class Polymer(object):
         
         mass=0
         
-        try:
-            for c in self.chain:
-                mol=self.db.molecules[c]
-                mapping=mol.topology.mapping
-                for l in mol.data[:,1]:
-                    atomtype=mapping[np.where(mapping==l)[0],1]
-                    mass+=self.ff.nonbonded[atomtype][1]
+        for c in self.chain:
+            mol=self.db.molecules[c]
+            mapping=mol.topology.mapping
+            for l in mol.data[:,0]:
+                atomname=mol.atom.keys()[np.where(mol.atom.values()==l)[0]]
                 
-            return mass
-        
-        except:
-            raise Exception("could not calculate polymer mass!")
-        
+                try:
+                    atomtype=mapping[np.where(mapping==atomname)[0],1][0]
+                    thismass=self.ff.nonbonded[atomtype][1]
+                    mass+=float(thismass)
+
+                except Exception, e:
+                    raise Exception("Could not find mass of atom %s"%atomname)
+          
+        self.mass=mass  
         return mass
-        '''
     
-    def get_mass_2(self):
-
-        masslist=[]
-        for j in xrange(0,len(self.poly),1):
-
-            data_list=self.poly[j].mapping(self.poly[j].data)
-
-            #get topology information of current molecule
-            top=self.poly[j].topology
-            
-            #if molecule is terminal, modify its topology accordingly
-            if j==0:
-                top.make_terminal("nterminal")
-            if j==len(self.poly)-1:
-                top.make_terminal("cterminal")                
-
-            for i in xrange(0,len(data_list),1):
-
-                atomtype=top.mapping[top.mapping[:,0]==data_list[i][1],1][0]                    
-                mass=self.ff.nonbonded[atomtype][1]
-		masslist.append(float(mass))
-
-	polymass=sum(masslist)
-	return(polymass)
-
-
-
-
+        
     def make(self,chain):
         
         #debug=0 #debug mode prints hooks positions in a separate file
@@ -90,6 +67,15 @@ class Polymer(object):
         
         self.logger.info("\n> generating polymer %s..."%self.molname)
         self.logger.info(">> sequence: %s"%self.chain)
+
+        #if gromacs mode: calculate mass
+        if self.mode=="gromacs":
+            try:
+                self.get_mass()
+            except Exception, e:
+                raise Exception("%s for polymer %s"%(e, self.molname))
+            self.logger.info(">> mass: %s Da"%self.mass)
+        
 
         #add first element in the chain
         m=deepcopy(self.db.molecules[self.chain[0]])
@@ -849,3 +835,24 @@ class Polymer(object):
         v /= np.linalg.norm(v)
         alpha = np.random.uniform(0.0, np.pi*2)
         return np.cos(alpha)*u + np.sin(alpha)*v
+    
+    
+    
+if __name__=="__main__":
+
+    import os,sys    
+    cwd=os.getcwd()
+    assembled=os.path.abspath(os.path.dirname(str(sys.argv[0])))
+    os.environ["ASSEMBLEPATH"]="%s;%s"%(cwd,assembled)
+    
+    #test mass estimation
+    from Database import Database
+    D=Database()
+    D.load("database\\database.txt", "gromacs")
+    F=ForceField()
+    F.load("database\\forcefield\\trappe.ff.txt")
+    P=Polymer(D,F,"test","gromacs")
+    P.chain="ccctttccCCt"
+    
+    print P.get_mass()
+    
