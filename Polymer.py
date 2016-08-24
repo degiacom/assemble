@@ -52,8 +52,36 @@ class Polymer(object):
             raise Exception("could not calculate polymer mass!")
         
         return mass
-    ''' 
-        
+        '''
+    
+    def get_mass_2(self):
+
+        masslist=[]
+        for j in xrange(0,len(self.poly),1):
+
+            data_list=self.poly[j].mapping(self.poly[j].data)
+
+            #get topology information of current molecule
+            top=self.poly[j].topology
+            
+            #if molecule is terminal, modify its topology accordingly
+            if j==0:
+                top.make_terminal("nterminal")
+            if j==len(self.poly)-1:
+                top.make_terminal("cterminal")                
+
+            for i in xrange(0,len(data_list),1):
+
+                atomtype=top.mapping[top.mapping[:,0]==data_list[i][1],1][0]                    
+                mass=self.ff.nonbonded[atomtype][1]
+		masslist.append(float(mass))
+
+	polymass=sum(masslist)
+	return(polymass)
+
+
+
+
     def make(self,chain):
         
         #debug=0 #debug mode prints hooks positions in a separate file
