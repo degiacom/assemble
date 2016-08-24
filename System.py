@@ -83,7 +83,7 @@ class System:
         self.logger.info("> polymer concentrations in box:")
         for x in xrange(0,len(counterbest),1):
             self.logger.info(">> %s: %s percent"%(percentage[x][0],counterbest[x]))
-                      
+        
         return np.reshape(cbest,dim)
 
         
@@ -169,6 +169,30 @@ class System:
             cnt=len(self.systembox[self.systembox==name])
             contmols.append([name,cnt])
    
+  
+        # print weight concentration
+        masspoly=[]
+        for x in xrange(0,len(self.polymers),1):
+            masspoly.append(self.polymers[x].get_mass_2())
+
+        weighted=[]
+        for x in xrange(0,len(masspoly),1):
+            weighted.append(float(masspoly[x])*float(contmols[x][1]))
+	
+        weightfrac=[]
+        for x in xrange(0,len(masspoly),1):
+            weightfrac.append(weighted[x]/sum(weighted))
+
+        self.logger.info("\n> polymer weight concentrations in box:")
+        for x in xrange(0,len(contmols),1):
+            self.logger.info(">> %s: %s weight percent"%(contmols[x][0],weightfrac[x]))
+
+        # print number of molecules in box
+        self.logger.info("\n> number of molecules in box:")
+        for x in xrange(0,len(contmols),1):
+            self.logger.info(">> %s: %s "%(contmols[x][0],contmols[x][1]))
+
+
         #counters needed for index file creation
         index_full=1 #atom counter without wrapping
         index_per_mol=1 #atom counter per molecule type (for pretty formatting)
@@ -232,6 +256,9 @@ class System:
         minbox=np.min(np.array(minpos),axis=0)
         maxbox=np.max(np.array(maxpos),axis=0)
         box=maxbox-minbox
+
+        # print total number of beads in box
+        self.logger.info("\n> total number of beads in box: %s", index_full-1)
 
         self.logger.info("\n> box size: %10.5f x %10.5f x %10.5f nm^3"%(box[0],box[1],box[2]))
 
