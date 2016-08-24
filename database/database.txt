@@ -1,13 +1,13 @@
-c .\database\cis-PI-monomer.pdb .\database\cis-PI-monomer.txt
-t .\database\trans-PI-monomer.pdb .\database\trans-PI-monomer.txt
+c cis-PI-monomer.pdb cis-PI-monomer.txt
+t trans-PI-monomer.pdb trans-PI-monomer.txt
 
-C .\database\cis-PBD-monomer.pdb .\database\cis-PBD-monomer.txt
-T .\database\trans-PBD-monomer.pdb .\database\trans-PBD-monomer.txt
+C cis-PBD-monomer.pdb cis-PBD-monomer.txt
+T trans-PBD-monomer.pdb trans-PBD-monomer.txt
 
-V .\database\vinyl-PBD-monomer.pdb .\database\vinyl-PBD-monomer.txt
+V vinyl-PBD-monomer.pdb vinyl-PBD-monomer.txt
 
-S .\database\Styrene.pdb .\database\Styrene.txt
-e .\database\diethylene.pdb .\database\diethylene.txt
+S Styrene.pdb Styrene.txt
+e diethylene.pdb diethylene.txt
 
-H .\database\hPI-monomer.pdb .\database\hPI-monomer.txt
-r .\database\rev-hPI-monomer.pdb .\database\rev-hPI-monomer.txt
+H hPI-monomer.pdb hPI-monomer.txt
+r rev-hPI-monomer.pdb rev-hPI-monomer.txt
