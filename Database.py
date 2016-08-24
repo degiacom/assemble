@@ -39,7 +39,7 @@ class Database(object):
                 fname=infile
         else: #relative path, look for first hit in different folders
             for p in mypath:
-                test="%s\\%s"%(p,infile)
+                test="%s%s%s"%(p,os.sep,infile)
                 if os.path.isfile(test):
                     fname=test
                     break
