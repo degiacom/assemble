@@ -124,8 +124,6 @@ class System:
             chain_elements=np.array(list(self.polymers[index_poly[i]].chain))
             total_monomers+=cnt*len(chain_elements)
             
-            average_length+=cnt*len(chain_elements)
-
             for c in np.unique(chain_elements):
                 element_increment=np.sum(chain_elements==c)*cnt
                 if c not in monomer_count.keys():
@@ -138,7 +136,7 @@ class System:
         for element in monomer_count.keys():                    
             self.logger.info(">> %s: %s percent"%(element, 100.0*(float(monomer_count[element])/total_monomers)))
 
-        avg_degree=float(average_length)/self.systembox.size
+        avg_degree=float(total_monomers)/self.systembox.size
         self.logger.info("\n> number average degree of polymerization: %s"%avg_degree)
 
 
@@ -190,7 +188,7 @@ class System:
 
         self.logger.info("\n> polymer weight concentrations in box:")
         for x in xrange(0,len(contmols),1):
-            self.logger.info(">> %s: %s weight percent"%(contmols[x][0],weightfrac[x]))
+            self.logger.info(">> %s: %s weight percent"%(contmols[x][0],weightfrac[x]*100))
 
         # print number of molecules in box
         self.logger.info("\n> number of molecules in box:")
