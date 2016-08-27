@@ -103,7 +103,7 @@ class System:
 
         #use nanometers, and slightly increase voxel size
         voxel_size/=10.0
-        voxel_size+=0.1
+        voxel_size+=0.5
 
         #create indicization (match name of polymer with index in list), and determine atomcount
         index_poly={}
@@ -217,7 +217,7 @@ class System:
             x=pos[0]
             y=pos[1]
             z=pos[2]
-                       
+                
             p=self.polymers[index_poly[self.systembox[x,y,z]]]
                           
             #compute polyhedron center
