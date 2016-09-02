@@ -517,7 +517,7 @@ class Polymer(object):
                 f_out.write(L)
                 
                 ##store topology information for later writing
-                ##atomID, atomtype, resid, resname, atomname, number like resid (?), charge, mass
+                ##atomID, atomtype, resid, resname, atomname, charge group, charge, mass
                 #if j==0 and data_list[i][1]==top.head[0]:
                 #    atomtype=top.head[1]
                 #elif j==len(self.poly)-1 and data_list[i][1]==top.tail[0]:
@@ -528,7 +528,7 @@ class Polymer(object):
                 mass=self.ff.nonbonded[atomtype][1]
                 charge=self.ff.nonbonded[atomtype][2]
 
-                at.append([index,atomtype,j+1,data_list[i][2],data_list[i][1],j+1,charge,mass])
+                at.append([index,atomtype,j+1,data_list[i][2],data_list[i][1],index,charge,mass])
                 
                 index+=1
                 if index>99999:
