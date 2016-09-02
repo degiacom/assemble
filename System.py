@@ -101,9 +101,9 @@ class System:
                 if currentbox[k]>voxel_size[k]:
                     voxel_size[k]=currentbox[k]
 
-        #use nanometers, and slightly increase voxel size
+        #use nanometers, increase voxel size by interchain_dist input
         voxel_size/=10.0
-        voxel_size+=0.5
+        voxel_size+=self.params.interchain_dist
 
         #create indicization (match name of polymer with index in list), and determine atomcount
         index_poly={}
@@ -259,6 +259,8 @@ class System:
         minbox=np.min(np.array(minpos),axis=0)
         maxbox=np.max(np.array(maxpos),axis=0)
         box=maxbox-minbox
+        # account for intermolecular separation beyond periodic boundary condition
+        box+=self.params.interchain_dist
 
         # print total number of beads in box
         self.logger.info("\n> total number of beads in box: %s", index_full-1)
