@@ -487,6 +487,8 @@ class Polymer(object):
         d=[] #dihedrals topology
         imp=[] #impropers topology
         
+        polymass=[]
+        
         index=1 #atom counter
         for j in xrange(0,len(self.poly),1):
 
@@ -529,6 +531,7 @@ class Polymer(object):
                 charge=self.ff.nonbonded[atomtype][2]
 
                 at.append([index,atomtype,j+1,data_list[i][2],data_list[i][1],index,charge,mass])
+                polymass.append(float(mass))
                 
                 index+=1
                 if index>99999:
@@ -609,6 +612,11 @@ class Polymer(object):
      
         f_out.close()
         
+        # print infos about polymer
+        self.logger.info(">> number of beads  :  %s", len(self.p))
+        self.logger.info(">> molecular weight :  %s g/mol", sum(polymass))
+        
+
         return
   
     #generate and return list for clash avoidance scan

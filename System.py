@@ -168,16 +168,10 @@ class System:
             contmols.append([name,cnt])
    
   
-        # print molecular weights
+       # print weight concentration
         masspoly=[]
         for x in xrange(0,len(self.polymers),1):
             masspoly.append(self.polymers[x].get_mass_2())
-        
-        self.logger.info("\n> molecular weights:")
-        for x in xrange(0,len(contmols),1):
-            self.logger.info(">> %s: %s g/mol"%(contmols[x][0],masspoly[x]))
-        
-        # print weight concentration
         weighted=[]
         for x in xrange(0,len(masspoly),1):
             weighted.append(float(masspoly[x])*float(contmols[x][1]))
