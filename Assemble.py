@@ -147,7 +147,7 @@ def run(infile):
         try:
 
             #generate polymer
-            poly=Polymer(db,ff,m,params.mode)
+            poly=Polymer(db,ff,m,params.mode,params.gromacs_nrxl)
             poly.clash_thresh=params.clash_thresh
             poly.make(params.chain[m])
         
