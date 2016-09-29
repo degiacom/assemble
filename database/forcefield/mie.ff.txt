@@ -18,7 +18,8 @@
 
  ; Bond type code
  ; name	    [nm]   [kJ/mol/nm2]	
-sigma     0.432158    1.500e+05
+sigmaA     0.432158        1.500e+05
+sigmaB     0.387503        1.500e+05
 
  ; additional tabulated potentials:
  ; first value: 8=tabulated 
