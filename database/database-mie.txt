@@ -1,0 +1,4 @@
+A Mie4A.pdb Mie4A.txt
+a Mie3A.pdb Mie3A.txt
+B Mie4B.pdb Mie4B.txt
+b Mie3B.pdb Mie3B.txt

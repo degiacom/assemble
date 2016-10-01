@@ -101,9 +101,9 @@ class System:
                 if currentbox[k]>voxel_size[k]:
                     voxel_size[k]=currentbox[k]
 
-        #use nanometers, and slightly increase voxel size
+        #use nanometers, increase voxel size by interchain_dist input
         voxel_size/=10.0
-        voxel_size+=0.1
+        voxel_size+=self.params.interchain_dist
 
         #create indicization (match name of polymer with index in list), and determine atomcount
         index_poly={}
@@ -124,8 +124,6 @@ class System:
             chain_elements=np.array(list(self.polymers[index_poly[i]].chain))
             total_monomers+=cnt*len(chain_elements)
             
-            average_length+=cnt*len(chain_elements)
-
             for c in np.unique(chain_elements):
                 element_increment=np.sum(chain_elements==c)*cnt
                 if c not in monomer_count.keys():
@@ -138,7 +136,7 @@ class System:
         for element in monomer_count.keys():                    
             self.logger.info(">> %s: %s percent"%(element, 100.0*(float(monomer_count[element])/total_monomers)))
 
-        avg_degree=float(average_length)/self.systembox.size
+        avg_degree=float(total_monomers)/self.systembox.size
         self.logger.info("\n> number average degree of polymerization: %s"%avg_degree)
 
 
@@ -170,11 +168,10 @@ class System:
             contmols.append([name,cnt])
    
   
-        # print weight concentration
+       # print weight concentration
         masspoly=[]
         for x in xrange(0,len(self.polymers),1):
             masspoly.append(self.polymers[x].get_mass_2())
-
         weighted=[]
         for x in xrange(0,len(masspoly),1):
             weighted.append(float(masspoly[x])*float(contmols[x][1]))
@@ -185,7 +182,7 @@ class System:
 
         self.logger.info("\n> polymer weight concentrations in box:")
         for x in xrange(0,len(contmols),1):
-            self.logger.info(">> %s: %s weight percent"%(contmols[x][0],weightfrac[x]))
+            self.logger.info(">> %s: %s weight percent"%(contmols[x][0],weightfrac[x]*100))
 
         # print number of molecules in box
         self.logger.info("\n> number of molecules in box:")
@@ -214,7 +211,7 @@ class System:
             x=pos[0]
             y=pos[1]
             z=pos[2]
-                       
+                
             p=self.polymers[index_poly[self.systembox[x,y,z]]]
                           
             #compute polyhedron center
@@ -256,6 +253,8 @@ class System:
         minbox=np.min(np.array(minpos),axis=0)
         maxbox=np.max(np.array(maxpos),axis=0)
         box=maxbox-minbox
+        # account for intermolecular separation beyond periodic boundary condition
+        box+=self.params.interchain_dist
 
         # print total number of beads in box
         self.logger.info("\n> total number of beads in box: %s", index_full-1)
