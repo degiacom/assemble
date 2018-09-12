@@ -154,9 +154,9 @@ class System:
                 if currentbox[k]>voxel_size[k]:
                     voxel_size[k]=currentbox[k]
 
-        #use nanometers, and slightly increase voxel size
+        #use nanometers, increase voxel size by interchain_dist input
         voxel_size/=10.0
-        voxel_size+=0.1
+        voxel_size+=self.params.interchain_dist
 
         #create indicization (match name of polymer with index in list), and determine atomcount
         index_poly={}
@@ -177,8 +177,6 @@ class System:
             chain_elements=np.array(list(self.polymers[index_poly[i]].chain))
             total_monomers+=cnt*len(chain_elements)
             
-            average_length+=cnt*len(chain_elements)
-
             for c in np.unique(chain_elements):
                 element_increment=np.sum(chain_elements==c)*cnt
                 if c not in list(monomer_count):
@@ -191,7 +189,7 @@ class System:
         for element in list(monomer_count):                    
             self.logger.info(">> %s: %s percent"%(element, 100.0*(float(monomer_count[element])/total_monomers)))
 
-        avg_degree=float(average_length)/self.systembox.size
+        avg_degree=float(total_monomers)/self.systembox.size
         self.logger.info("\n> number average degree of polymerization: %s"%avg_degree)
 
 
@@ -243,7 +241,7 @@ class System:
             x=pos[0]
             y=pos[1]
             z=pos[2]
-                       
+                
             p=self.polymers[index_poly[self.systembox[x,y,z]]]
                           
             #compute polyhedron center
@@ -285,6 +283,8 @@ class System:
         minbox=np.min(np.array(minpos),axis=0)
         maxbox=np.max(np.array(maxpos),axis=0)
         box=maxbox-minbox
+        # account for intermolecular separation beyond periodic boundary condition
+        box+=self.params.interchain_dist
 
         self.logger.info("\n> box size: %10.5f x %10.5f x %10.5f nm^3"%(box[0],box[1],box[2]))
 

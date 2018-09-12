@@ -48,7 +48,7 @@ class ForceField(object):
         #extract equations type
         while line:
             w=line.split()
-            if not ";" in w[0] and len(w)==4:
+            if not line.isspace() and not ";" in w[0] and len(w)==4:
                 self.fftype=np.array(w).astype(int)
                 break
             line=f.readline()
@@ -62,7 +62,7 @@ class ForceField(object):
             if "atomtypes" in line:
                 break
             
-            if not ";" in w[0]:
+            if not line.isspace() and not ";" in w[0]:
                 self.bonded[w[0]]=np.array(w[1:]).astype(float)
                         
             line=f.readline()
@@ -76,7 +76,7 @@ class ForceField(object):
             if "defaults" in line:
                 break
             
-            if not ";" in w[0]:
+            if not line.isspace() and not ";" in w[0]:
                 self.nonbonded[w[0]]=np.array(w[1:])
 
             
@@ -87,7 +87,7 @@ class ForceField(object):
         #get combination rules
         while line:         
             w=line.split()
-            if not ";" in w[0]:
+            if not line.isspace() and not ";" in w[0]:
                 self.combination=np.array(w)
                 break
         
@@ -116,7 +116,7 @@ class ForceField(object):
             return self.default_bond
     
     def get_angle(self,name):
-        if self.fftype[1]>=1 or self.fftype[1]<=2:
+        if self.fftype[1]>=1 and self.fftype[1]<=2:
             return self.bonded[name][0]
         #no analytical minimum exists, return default
         else:

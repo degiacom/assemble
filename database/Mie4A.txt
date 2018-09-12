@@ -1,0 +1,20 @@
+[ mapping ]
+   AA     A 
+   KK     A 
+   LL     A 
+   ZZ     A 
+[ bonds ]
+   AA    KK      sigmaA 
+   KK    LL      sigmaA  
+   LL    ZZ      sigmaA 
+   ZZ   +AA      sigmaA 
+[ angles ]
+   LL   ZZ   +AA    angle
+   -ZZ   AA  KK     angle
+[ dihedrals ]
+   KK  LL  ZZ   +AA     dihedral
+   -ZZ   AA   KK LL     dihedral
+[ nterminal ]
+   AA 	 A	
+[ cterminal ]
+   ZZ    A	

@@ -1,0 +1,44 @@
+; SAFT-VR Mie describes molecules as linear chain of tangentially bonded beads
+
+; to be adjusted to specific Mie potential parameters:
+;  bond length
+;  bead mass
+
+; post processing of *itp file:
+; delete angle/dihedral sections if not wanted
+; adjust nrexl to 1 (when no angles/dihedrals are used) 
+
+; minimum length of monomers is 3 beads as next monomer position has to be defined by angle+ dihedral
+; combining 3bead and 4bead monomers, any chain length from 6 beads can be generated
+
+ [ bondedtypes ]
+; bonds  angles  dihedrals  impropers
+; bond=1 (harmonic), all others >7 to let Assemble use default values
+     1       8          8          8
+
+ ; Bond type code
+ ; name	    [nm]   [kJ/mol/nm2]	
+sigmaA     0.432158        1.500e+05
+sigmaB     0.387503        1.500e+05
+
+ ; additional tabulated potentials:
+ ; first value: 8=tabulated 
+ ; second value: meet name of tab.potential file
+ ; third value: weighting factor 1=full
+bond       	8 1 1
+angle      	8 1 1
+dihedral 	8 1 1
+
+
+
+[ atomtypes ]
+ ;name  at.num   mass      charge  ptype       sigma     epsilon
+ ; mass is the only value to be adjusted to meet the specific Mie potential 
+   A    6     52.        0.000     A       1.000        1.0000
+   B    6     34.        0.000     A       1.000        1.0000
+
+[ defaults ]
+ ; nbfunc	comb-rule	gen-pairs	fudgeLJ	fudgeQQ
+ ; none of those values is important when all interactions are provided by tabulated potentials
+ ; comb-rule=1 allows using a general lam_r-lam_a tabulated file and providing 4*esp*sig^lam in the sigma/epsilon columns above (only possible when interactions share same Mie exponents)
+1               1               yes             0           0.5

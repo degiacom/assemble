@@ -29,7 +29,9 @@ class Parser:
 		self.add('default_angle','default_angle','float',114)
 		self.add('default_dihedral','default_dihedral','float',120)
 		self.add('clash_threshold','clash_thresh','float',0.9)
-		
+		self.add('interchain_dist','interchain_dist','float',0.2)
+		self.add('gromacs_nrxl','gromacs_nrxl','int',3)
+        
 		self.add('database','db','str',"")
 		self.add('residue','residue','dictionary',{})
 		
