@@ -1,4 +1,4 @@
-# Copyright (c) 2014 Matteo Degiacomi and Valentina Erastova
+# Copyright (c) 2014-2018 Matteo Degiacomi and Valentina Erastova
 #
 # Assemble is free software ;
 # you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation ;
@@ -44,7 +44,7 @@ class System:
         for l in percentage:
             test+=float(l)
 
-        for i in xrange(len(percentage)):
+        for i in range(len(percentage)):
             #v=float(percentage[i])
             percentage[i]=(percentage[i]/test)*100.0
         
@@ -56,7 +56,7 @@ class System:
         #make roulette array
         roulette=[percentage[0]]
         t=[percentage[0]]
-        for r in xrange(1,len(percentage),1):
+        for r in range(1,len(percentage),1):
             t.append(percentage[r])
             roulette.append(roulette[r-1]+percentage[r])
     
@@ -65,13 +65,13 @@ class System:
         cbest=np.array([])
         #attempt distributing molecules in box according to desired concentration
         #keep best of 100 attemps
-        for i in xrange(1,100):
+        for i in range(1,100):
 
             c=[]
     
             #pick a random monomer according to desired percentages
             counter=np.zeros(len(roulette))
-            for x in xrange(0,length,1):
+            for x in range(0,length,1):
                 rnd=np.random.rand(1)[0]*100
                 index=0
                 while True:
@@ -93,7 +93,7 @@ class System:
                 cbest=np.array(c)
                 counterbest=counter.copy()
 
-        print counterbest
+        #print(counterbest)
 
         #if reference percentage is a fractional mass, tweak it using monomers mass
         if use_fractional_mass:
@@ -108,12 +108,12 @@ class System:
             mw*=100.0
         
         self.logger.info("> polymer units in box:")
-        for x in xrange(0,len(counterbest),1):
+        for x in range(0,len(counterbest),1):
             self.logger.info(">> %s: %s percent"%(names[x],perc[x]))
                       
                       
         self.logger.info("\n> polymers fractional weight:")
-        for x in xrange(0,len(counterbest),1):
+        for x in range(0,len(counterbest),1):
             self.logger.info(">> %s: %s percent"%(names[x],mw[x]))
                       
       
@@ -124,12 +124,12 @@ class System:
     #if get_fractional=False, fractional mass is converted into percentage
     def convert_concentration(self, c, get_fractional=True):
         m=[]
-        for x in xrange(0,len(self.polymers),1):
+        for x in range(0,len(self.polymers),1):
             m.append(self.polymers[x].mass)
         allmasses=np.array(m)
         allmasses/=np.sum(allmasses)
 
-        for x in xrange(0,len(allmasses),1):
+        for x in range(0,len(allmasses),1):
             if get_fractional:   
                 rescaled=c[x]/allmasses[x]
             else:   
@@ -147,10 +147,10 @@ class System:
 
         #get maximal box between existing polymers, to define voxel size
         voxel_size=np.array([0.,0.,0.])
-        for x in xrange(0,len(self.polymers),1):
+        for x in range(0,len(self.polymers),1):
             atoms=self.polymers[x].get_xyz()
             currentbox=np.max(atoms,axis=0)-np.min(atoms,axis=0)
-            for k in xrange(0,3,1):
+            for k in range(0,3,1):
                 if currentbox[k]>voxel_size[k]:
                     voxel_size[k]=currentbox[k]
 
@@ -161,7 +161,7 @@ class System:
         #create indicization (match name of polymer with index in list), and determine atomcount
         index_poly={}
         atomcount=0
-        for i in xrange(0,len(self.polymers),1):
+        for i in range(0,len(self.polymers),1):
             name=self.polymers[i].molname
             index_poly[name]=i
             atomcount+=len(self.polymers[i].get_xyz())*len(self.systembox[self.systembox==name])
@@ -181,14 +181,14 @@ class System:
 
             for c in np.unique(chain_elements):
                 element_increment=np.sum(chain_elements==c)*cnt
-                if c not in monomer_count.keys():
+                if c not in list(monomer_count):
                     monomer_count[c]=element_increment
                 else:
                     monomer_count[c]+=element_increment
 
-        #print statistics
+        #print(statistics)
         self.logger.info("\n> monomers distribution in box:")
-        for element in monomer_count.keys():                    
+        for element in list(monomer_count):                    
             self.logger.info(">> %s: %s percent"%(element, 100.0*(float(monomer_count[element])/total_monomers)))
 
         avg_degree=float(average_length)/self.systembox.size
@@ -217,7 +217,7 @@ class System:
         sortedflat=flatsystem[indices]
         uniquesorted=np.unique(sortedflat)
         contmols=[]
-        for i in xrange(0,len(uniquesorted),1):
+        for i in range(0,len(uniquesorted),1):
             name=uniquesorted[i]
             cnt=len(self.systembox[self.systembox==name])
             contmols.append([name,cnt])
@@ -255,14 +255,14 @@ class System:
             maxpos.append(np.max(pos-cntr+voxel_size*np.array([x,y,z]),axis=0))
             
             #iterate over elements
-            for j in xrange(0,len(p.poly),1):
+            for j in range(0,len(p.poly),1):
                 cntres+=1
                 #wrap counting in case too many residues are present
                 if cntres>99999:
                     cntres=0
                 data_list=p.poly[j].mapping(p.poly[j].data)
 
-                for i in xrange(0,len(data_list),1):
+                for i in range(0,len(data_list),1):
                     #create and write line in gromacs format (.gro file)
                     L='%5d%-5s%5s%5d%8.3f%8.3f%8.3f\n'%(cntres,data_list[i][2],data_list[i][1],index,\
 													data_list[i][5]/10.0-cntr[0]+voxel_size[0]*x+voxel_size[0]/2.0,\
@@ -299,7 +299,7 @@ class System:
     
         f_out=open("%s/%s.top"%(mypath,self.params.output),'w')
 
-        f_out.write("; generated with Assemble.py, by Matteo Degiacomi and Valentina Erastova, 2014\n")
+        f_out.write("; generated with Assemble.py, by Matteo Degiacomi and Valentina Erastova, 2014-2018\n")
 
         f_out.write("\n[ defaults ]\n")
         f_out.write("; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n")
@@ -309,19 +309,19 @@ class System:
 
         f_out.write("\n[ atomtypes ]\n")
         f_out.write(";name   at.num  mass     charge  ptype  sigma     epsilon\n")
-        for l in self.ff.nonbonded.keys():
+        for l in list(self.ff.nonbonded):
             line=self.ff.nonbonded[l]
             #f_out.write("{:<8}{:<8}{:<9}{:<8}{:<7}{:<10}{:<15}\n".format(l,line[0],line[1],line[2],line[3],line[4],line[5]))
             f_out.write("%8s%8s%9s%8s%7s%10s%15s\n"%(l,line[0],line[1],line[2],line[3],line[4],line[5]))                  
 
-        for x in xrange(0,len(self.polymers),1):
+        for x in range(0,len(self.polymers),1):
             f_out.write("\n#include \"%s.itp\""%self.polymers[x].molname)
  
         f_out.write("\n\n[ system ]\n%s\n"%self.params.output)
         f_out.write("\n[ molecules ]\n")
         
 
-        for i in xrange(0,len(contmols),1):
+        for i in range(0,len(contmols),1):
             f_out.write("%s %s\n"%(contmols[i][0],contmols[i][1]))
             
         f_out.close()

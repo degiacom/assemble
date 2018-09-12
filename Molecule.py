@@ -1,4 +1,4 @@
-# Copyright (c) 2014 Matteo Degiacomi and Valentina Erastova
+# Copyright (c) 2014-2018 Matteo Degiacomi and Valentina Erastova
 #
 # Assemble is free software ;
 # you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation ;
@@ -149,14 +149,14 @@ class Molecule:
         self.topology.load(top)
         self.topfile=top
         #verify also that every atom in topology corresponds to an atom in the structure
-        for i in xrange(0,len(self.topology.mapping[:,0]),1):
+        for i in range(0,len(self.topology.mapping[:,0]),1):
             if not self.topology.mapping[i,0] in self.atom:
                 raise IOError("Atom %s found in topology but not on coordinates!"%self.topology.mapping[i,0])
         
         #verify also that every atom in structure corresponds to an atom in topology            
-        for i in xrange(0,len(self.atom.keys()),1):
-            if not np.any(self.topology.mapping[:,0]==self.atom.keys()[i]):
-                raise IOError("Atom %s found in topology but not on coordinates"%self.atom.keys()[i])
+        for i in range(0, len(self.atom), 1):
+            if not np.any(self.topology.mapping[:,0]==list(self.atom)[i]):
+                raise IOError("Atom %s found in topology but not on coordinates"%list(self.atom)[i])
             
         #compute index of termini (extract termini name, and look for its index in pdb file)
         self.limit['head']=self.index_from_name(self.topology.head[0])
@@ -182,7 +182,7 @@ class Molecule:
 
 
     def set_incr_index(self,start):
-        for x in xrange(0,len(self.data),1):
+        for x in range(0,len(self.data),1):
             self.data[x,0]=start+x
             
         #if topology is loaded, increase too!
@@ -246,12 +246,12 @@ class Molecule:
     def mapping(self,data):
 
         data_list=[]
-        for i in xrange(0,len(data),1):
+        for i in range(0,len(data),1):
             #backmap to strings
-            atom=[k for k, v in self.atom.iteritems() if v == data[i,1]][0]
-            res=[k for k, v in self.res.iteritems() if v == data[i,2]][0]
-            chain=[k for k, v in self.chain.iteritems() if v == data[i,3]][0]
-            #atomtype=[k for k, v in self.atomtype.iteritems() if v == data[i,10]][0]
+            atom=[k for k, v in self.atom.items() if v == data[i,1]][0]
+            res=[k for k, v in self.res.items() if v == data[i,2]][0]
+            chain=[k for k, v in self.chain.items() if v == data[i,3]][0]
+            #atomtype=[k for k, v in self.atomtype.items() if v == data[i,10]][0]
             atomtype=""
              
             l=(int(self.data[i,0]),atom,res,chain,int(self.data[i,4]),self.data[i,5],self.data[i,6],self.data[i,7],self.data[i,8],self.data[i,9],atomtype)
@@ -270,7 +270,7 @@ class Molecule:
 
         f_out=open(outname,"w")
 
-        for i in xrange(0,len(data_list),1):
+        for i in range(0,len(data_list),1):
 
             #create and write PDB line
             l=(data_list[i][0],data_list[i][1],data_list[i][2],data_list[i][3],data_list[i][4],data_list[i][5],data_list[i][6],data_list[i][7],data_list[i][8],data_list[i][9],data_list[i][10])

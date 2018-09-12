@@ -1,6 +1,4 @@
-#! /usr/bin/env python
-
-# Copyright (c) 2014 Matteo Degiacomi and Valentina Erastova
+# Copyright (c) 2014-2018 Matteo Degiacomi and Valentina Erastova
 #
 # Assemble is free software ;
 # you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation ;
@@ -87,7 +85,7 @@ class MainWindow(wx.Frame):
 
     def OnAbout(self,e):
         # Create a message dialog box
-        dlg = wx.MessageDialog(self, " Assemble v1.0! \n (c) Matteo Degiacomi and Valentina Erastova\n 2014", "About Assemble", wx.OK)
+        dlg = wx.MessageDialog(self, " Assemble v1.1! \n (c) Matteo Degiacomi and Valentina Erastova\n 2014-2018", "About Assemble", wx.OK)
         dlg.ShowModal() # Shows it
         dlg.Destroy() # finally destroy it when finished.
 
@@ -113,7 +111,7 @@ class MainWindow(wx.Frame):
     def OnLoad(self,e):
         """ Open a file"""
         infile=-1
-        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "*", wx.OPEN)
+        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "*", wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
@@ -149,14 +147,14 @@ class MainWindow(wx.Frame):
             if os.path.isfile(P.db):            
                 self.I.setdatabase.SetValue(P.db)
                 self.I.OnBLoad(None)
-        except Exception, e:
+        except Exception as e:
             return
           
         pos=self.I.lc.GetItemCount()
-        for r in P.residue.keys():
+        for r in list(P.residue):
             try:
                 self.db.add(r,P.residue[r][0],P.residue[r][1])
-            except Exception, e:
+            except Exception as e:
                 return
  
             p=self.I.lc.InsertStringItem(pos,r)
@@ -175,19 +173,19 @@ class MainWindow(wx.Frame):
         cnt=0
         for name in P.molecule:   
                         
-            if name in P.chain.keys():
+            if name in list(P.chain):
                 
                 textperc=""
                 cnt2={}
-                for x in xrange(0,len(P.chain[name][0]),1):
-                    if P.chain[name][0][x] in cnt2.keys():
+                for x in range(0,len(P.chain[name][0]),1):
+                    if P.chain[name][0][x] in list(cnt2):
                         cnt2[P.chain[name][0][x]]=cnt2[P.chain[name][0][x]]+1
                     else:
                         cnt2[P.chain[name][0][x]]=1
                 
-                for x in cnt2.keys():
+                for x in list(cnt2):
                 
-                    if x not in self.db.molecules.keys():
+                    if x not in list(self.db.molecules):
                         self.errorPopup("Chain in polymer %s features %s molecule,\n that is not contained in loaded database!"%(name,x), "ERROR!")
                 
                     val=cnt2[x]/float(len(P.chain[name][0]))*100.0
@@ -199,7 +197,7 @@ class MainWindow(wx.Frame):
                 self.P.lc.SetStringItem(cnt, 2, str(len(P.chain[name][0])))
                 self.P.lc.SetStringItem(cnt, 3, textperc)
             
-                if name in P.concentration.keys():
+                if name in list(P.concentration):
                     try: #in case concentration value is not given
                         self.P.lc.SetStringItem(cnt, 4, P.concentration[name][0])
                     except:
@@ -210,9 +208,7 @@ class MainWindow(wx.Frame):
 
     def OnMake(self,event):
 
-        fname="input_tmp"
         #dbname="db_tmp"
-        
         #try:
         #    self.db.save(dbname)
         #except:
@@ -226,12 +222,12 @@ class MainWindow(wx.Frame):
         
         else:
             conc=0
-            for i in xrange(0,self.P.lc.GetItemCount(),1):
-                c=self.P.lc.GetItem(itemId=i,col=4).GetText()
+            for i in range(0,self.P.lc.GetItemCount(),1):
+                c=self.P.lc.GetItem(itemIdx=i,col=4).GetText()
                 try:
                     conc+=float(c)
                 except:
-                    self.errorPopup("concentration of polymer %s must be\na number between 0 and 100!"%self.P.lc.GetItem(itemId=i,col=0).GetText(), "ERROR!")
+                    self.errorPopup("concentration of polymer %s must be\na number between 0 and 100!"%self.P.lc.GetItem(itemIdx=i,col=0).GetText(), "ERROR!")
                     return  
             
             #if conc!=100:
@@ -260,17 +256,26 @@ class MainWindow(wx.Frame):
                     
         if int(self.S.setgridx.GetValue())==0 or int(self.S.setgridy.GetValue())==0 or int(self.S.setgridx.GetValue())==0:
             self.errorPopup("box information contains zero values. System generation will be skipped...", "WARNING!")     
-                    
+
+
+        fname_in = "input_tmp"
+        dirname = os.path.dirname(os.path.realpath(__file__))
+        fname = os.path.join(dirname, fname_in)
+ 
         try:
             self.makeFile(fname)
-        except Exception, e:
+        except Exception as e:
             self.errorPopup("problem in input file!\n"%e, "ERROR!")
+            #os.remove(dbname)
+            os.remove(fname)
             return
 
         try:
             A.run(fname)
-        except Exception, e:
+        except Exception as e:
             self.errorPopup("polymer generation failed!\n%s"%e, "ERROR!")
+            #os.remove(dbname)
+            os.remove(fname)
             return
             
         #os.remove(dbname)
@@ -290,10 +295,10 @@ class MainWindow(wx.Frame):
         #except:
         #    self.errorPopup("could not prepare database!", "ERROR!")
 
-        for i in xrange(0,self.I.lc.GetItemCount(),1):
-            item=self.I.lc.GetItem(itemId=i,col=0)
-            pdb=self.I.lc.GetItem(itemId=i,col=1)
-            top=self.I.lc.GetItem(itemId=i,col=2)
+        for i in range(0,self.I.lc.GetItemCount(),1):
+            item=self.I.lc.GetItem(itemIdx=i,col=0)
+            pdb=self.I.lc.GetItem(itemIdx=i,col=1)
+            top=self.I.lc.GetItem(itemIdx=i,col=2)
             
             fout.write("residue %s %s %s\n"%(item.GetText(),pdb.GetText(),top.GetText()))
 
@@ -305,7 +310,7 @@ class MainWindow(wx.Frame):
             self.errorPopup("force field file not found!", "ERROR!")
 
 
-        print self.S.setpath.GetValue()
+        #print(self.S.setpath.GetValue())
         outfolder=self.S.setpath.GetValue().replace('\\','/')
         if len(outfolder)==0:
             outfolder="."
@@ -315,10 +320,10 @@ class MainWindow(wx.Frame):
         fout.write("box_grid_shape %s %s %s\n"%(self.S.setgridx.GetValue(),self.S.setgridy.GetValue(),self.S.setgridz.GetValue()))
         
         molecules=[]
-        for i in xrange(0,self.P.lc.GetItemCount(),1):
-            item=self.P.lc.GetItem(itemId=i,col=0)
-            chain=self.P.lc.GetItem(itemId=i,col=1)
-            conc=self.P.lc.GetItem(itemId=i,col=4)
+        for i in range(0,self.P.lc.GetItemCount(),1):
+            item=self.P.lc.GetItem(itemIdx=i,col=0)
+            chain=self.P.lc.GetItem(itemIdx=i,col=1)
+            conc=self.P.lc.GetItem(itemIdx=i,col=4)
             
             fout.write("chain %s %s\n"%(item.GetText(),chain.GetText()))
             fout.write("concentration %s %s\n"%(item.GetText(),conc.GetText()))
@@ -330,7 +335,7 @@ class MainWindow(wx.Frame):
     
     def errorPopup(self,msg,title):
         """ Popup error message"""
-        print msg
+        print(msg)
         dlg = wx.MessageDialog(self, msg, title, wx.OK)
         dlg.ShowModal() # Shows it
         dlg.Destroy() # finally destroy it when finished.
@@ -395,7 +400,7 @@ class InputData(wx.Panel):
         self.Centre()
         
     def OnBSelect(self,event):
-        dlg = wx.FileDialog(self, "Load a database file", self.dirname, "", "*.*", wx.OPEN)
+        dlg = wx.FileDialog(self, "Load a database file", self.dirname, "", "*.*", wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.databasefile = dlg.GetFilename()
             self.databasedir = dlg.GetDirectory()
@@ -409,18 +414,18 @@ class InputData(wx.Panel):
             #clear the current database, and load a new one
             if self.lc.GetItemCount()>0:
                 self.lc.DeleteAllItems()
-                for x in self.parent.db.molecules.keys():
+                for x in list(self.parent.db.molecules):
                     self.parent.db.remove(x) 
             
             try:
                 self.parent.db.load(self.setdatabase.GetValue(), "gromacs")
-            except IOError,e:
+            except IOError as e:
                 error="Error in database file loading!\n%s"%e
                 self.parent.errorPopup(error,"ERROR!")
                 raise IOError(error)
             
             pos=0    
-            lines=sorted(self.parent.db.molecules.keys())
+            lines=sorted(list(self.parent.db.molecules))
             for x in lines:      
                 filename=self.parent.db.molecules[x].pdbfile
                 topologyfile=self.parent.db.molecules[x].topfile
@@ -475,7 +480,7 @@ class InputData(wx.Panel):
                 self.parent.db.remove(name)
             except:
                 self.parent.errorPopup("Cannot remove molecule... umm... weird...","ERROR!")
-                print "Cannot remove molecule... umm... weird..."
+                #print("Cannot remove molecule... umm... weird...")
                 return
             
             self.lc.DeleteItem(index)
@@ -511,7 +516,7 @@ class InputForceField(wx.Panel):
 
 
     def OnClickSelectff(self,event):
-        dlg = wx.FileDialog(self, "Choose Force Field file", self.dirname, "", "*.*", wx.OPEN)
+        dlg = wx.FileDialog(self, "Choose Force Field file", self.dirname, "", "*.*", wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
@@ -578,7 +583,7 @@ class DatabaseEditor(wx.Dialog):
 
 
     def OnClickSelectPDB(self,event):
-        dlg = wx.FileDialog(self, "Choose PDB file", self.dirname, "", "*.*", wx.OPEN)
+        dlg = wx.FileDialog(self, "Choose PDB file", self.dirname, "", "*.*", wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
@@ -587,7 +592,7 @@ class DatabaseEditor(wx.Dialog):
 
 
     def OnClickSelectTop(self,event):
-        dlg = wx.FileDialog(self, "Choose topology file", self.dirname, "", "*.*", wx.OPEN)
+        dlg = wx.FileDialog(self, "Choose topology file", self.dirname, "", "*.*", wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
@@ -626,8 +631,8 @@ class DatabaseEditor(wx.Dialog):
         
         
         residues=[]
-        for i in xrange(0,self.parent.lc.GetItemCount(),1):
-            item=self.parent.lc.GetItem(itemId=i,col=0)
+        for i in range(0,self.parent.lc.GetItemCount(),1):
+            item=self.parent.lc.GetItem(itemIdx=i,col=0)
             residues.append(str(item.GetText()))
         if name in residues:
             self.parent.parent.errorPopup("The desired residue name already exists in the database!\nPlease choose a unique name!","ERROR!")
@@ -635,14 +640,14 @@ class DatabaseEditor(wx.Dialog):
         
         try:
             self.parent.parent.db.add(name,pdb,top)
-        except:
-            self.parent.parent.errorPopup("Cannot add residue: invalid PDB or topology file!","ERROR!")
+        except Exception as e:
+            self.parent.parent.errorPopup("Cannot add residue:\n%s!"%e,"ERROR!")
             return
             
         num_items = self.parent.lc.GetItemCount()
-        self.parent.lc.InsertStringItem(num_items,name)    
-        self.parent.lc.SetStringItem(num_items, 1, pdb)
-        self.parent.lc.SetStringItem(num_items, 2, top) 
+        self.parent.lc.InsertItem(num_items,name)    
+        self.parent.lc.SetItem(num_items, 1, pdb)
+        self.parent.lc.SetItem(num_items, 2, top) 
 
         self.Close(True)  # Close the frame.
 
@@ -744,7 +749,7 @@ class Polymers(wx.Panel):
 
             #renumber items after deletion
             num_items = self.lc.GetItemCount()
-            for x in xrange(index,num_items,1):
+            for x in range(index,num_items,1):
                 self.lc.SetStringItem(x, 0, str(x+1))
 
 
@@ -819,8 +824,8 @@ class PolymerEditor(wx.Dialog):
 
         #extract names of available molecules from database
         self.molecules=[]
-        for i in xrange(0,self.parent.parent.I.lc.GetItemCount(),1):
-            item=self.parent.parent.I.lc.GetItem(itemId=i,col=0)
+        for i in range(0,self.parent.parent.I.lc.GetItemCount(),1):
+            item=self.parent.parent.I.lc.GetItem(itemIdx=i, col=0)
             self.molecules.append(str(item.GetText()))
 
         self.lblname = wx.StaticText(self, label="name:")
@@ -973,8 +978,8 @@ class PolymerEditor(wx.Dialog):
             return
         
         polymers=[]
-        for i in xrange(0,self.parent.lc.GetItemCount(),1):
-            item=self.parent.lc.GetItem(itemId=i,col=0)
+        for i in range(0,self.parent.lc.GetItemCount(),1):
+            item=self.parent.lc.GetItem(itemIdx=i,col=0)
             polymers.append(str(item.GetText()))
         if name in polymers:
             if self.params==-1:
@@ -990,7 +995,7 @@ class PolymerEditor(wx.Dialog):
             self.parent.parent.errorPopup("A chain must be defined!","ERROR!")
             return
         
-        for x in xrange(0,len(chain),1):                
+        for x in range(0,len(chain),1):                
             if chain[x] not in self.molecules:
                 self.parent.parent.errorPopup("Residue %s is not included in the\nresidues database"%chain[x],"ERROR!")
                 return
@@ -1000,14 +1005,14 @@ class PolymerEditor(wx.Dialog):
         textperc=""
         #if self.editsource.GetValue()=="chain":
         cnt={}
-        for x in xrange(0,len(chain),1):
-            if chain[x] in cnt.keys():
+        for x in range(0,len(chain),1):
+            if chain[x] in list(cnt):
                 cnt[chain[x]]=cnt[chain[x]]+1
             else:
                 cnt[chain[x]]=1
         
         i=0
-        for x in cnt.keys():
+        for x in list(cnt):
             val=cnt[x]/float(self.editlength.GetValue())*100.0
             textperc+="%s=%6.2f, "%(x,val)
    
@@ -1017,7 +1022,7 @@ class PolymerEditor(wx.Dialog):
             i+=1       
 
         #else:
-        #    for index in xrange(0,self.lc.GetItemCount(),1):
+        #    for index in range(0,self.lc.GetItemCount(),1):
         #        name=str(self.lc.GetItem(index,0).GetText())
         #        percentage=str(self.lc.GetItem(index,1).GetText())
         #        textperc+="%s=%s, "%(name,percentage)
@@ -1077,14 +1082,14 @@ class PolymerEditor(wx.Dialog):
     
         perc=[]
         test=0.0
-        for index in xrange(0,self.lc.GetItemCount(),1):
+        for index in range(0,self.lc.GetItemCount(),1):
             percentage=float(self.lc.GetItem(index,1).GetText())
             test+=percentage
             perc.append([self.lc.GetItem(index,0).GetText(),percentage])
                                     
         if test!=100.0:
             self.parent.parent.errorPopup("Sum of percentages equal to %s (100 is expected)!\nTreating given values as ratios..."%test,"WARNING!")
-            for i in xrange(0,len(perc),1):
+            for i in range(0,len(perc),1):
                 perc[i][1]/=float(test)
                 perc[i][1]*=100.0
             #self.parent.parent.errorPopup("Sum of percentages is equal to %s! 100 is expected!"%test,"ERROR!")
@@ -1093,7 +1098,7 @@ class PolymerEditor(wx.Dialog):
         try:
             chain=A.make_chain(editlength_f, perc)
         except:
-            print "ERROR: something unexpected happened during chain generation, how weird..."
+            print("ERROR: something unexpected happened during chain generation, how weird...")
             return -1
         
         self.editchain.SetValue(chain)
@@ -1107,7 +1112,7 @@ class PolymerEditor(wx.Dialog):
     
             #renumber items after deletion
             #num_items = self.lc.GetItemCount()
-            #for x in xrange(index,num_items,1):
+            #for x in range(index,num_items,1):
             #    self.lc.SetStringItem(x, 0, str(x+1))
 
     def OnCancel(self,e):
@@ -1179,8 +1184,8 @@ class ChainEditor(wx.Dialog):
             return
 
         residues=[]
-        for i in xrange(0,self.parent.lc.GetItemCount(),1):
-            item=self.parent.lc.GetItem(itemId=i,col=0)
+        for i in range(0,self.parent.lc.GetItemCount(),1):
+            item=self.parent.lc.GetItem(itemIdx=i,col=0)
             residues.append(str(item.GetText()))
         if name in residues:
             if self.params==-1:

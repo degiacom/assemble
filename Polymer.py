@@ -1,4 +1,4 @@
-# Copyright (c) 2014 Matteo Degiacomi and Valentina Erastova
+# Copyright (c) 2014-2018 Matteo Degiacomi and Valentina Erastova
 #
 # Assemble is free software ;
 # you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation ;
@@ -42,17 +42,17 @@ class Polymer(object):
         mass=0
         
         for c in self.chain:
-            mol=self.db.molecules[c]
-            mapping=mol.topology.mapping
-            for l in mol.data[:,0]:
-                atomname=mol.atom.keys()[np.where(mol.atom.values()==l)[0]]
+            mol = self.db.molecules[c]
+            mapping = mol.topology.mapping
+            for l in mol.data[:, 0]:
+                atomname = list(mol.atom)[np.where(list(mol.atom.values())==l)[0][0]]
                 
                 try:
                     atomtype=mapping[np.where(mapping==atomname)[0],1][0]
                     thismass=self.ff.nonbonded[atomtype][1]
                     mass+=float(thismass)
 
-                except Exception, e:
+                except Exception as e:
                     raise Exception("Could not find mass of atom %s"%atomname)
           
         self.mass=mass  
@@ -63,29 +63,29 @@ class Polymer(object):
         
         #debug=0 #debug mode prints hooks positions in a separate file
         
-        self.chain=chain
+        self.chain = chain
         
         self.logger.info("\n> generating polymer %s..."%self.molname)
         self.logger.info(">> sequence: %s"%self.chain)
 
         #if gromacs mode: calculate mass
-        if self.mode=="gromacs":
+        if self.mode == "gromacs":
             try:
                 self.get_mass()
-            except Exception, e:
+            except Exception as e:
                 raise Exception("%s for polymer %s"%(e, self.molname))
+            
             self.logger.info(">> mass: %s Da"%self.mass)
         
-
         #add first element in the chain
-        m=deepcopy(self.db.molecules[self.chain[0]])
+        m = deepcopy(self.db.molecules[self.chain[0]])
         self.poly.append(m)
 
         #if debug: #DEBUG: print positions of HOOKS IN A SEPARATE FILE
         #    f_out = open("hooks.pdb", 'w')
                 
         #iterate over chain string and build data structure
-        for x in xrange(1,len(self.chain),1):
+        for x in range(1,len(self.chain),1):
         
             #get new monomer
             m_new=deepcopy(self.db.molecules[self.chain[x]])
@@ -118,7 +118,6 @@ class Polymer(object):
                 elif len(b1)==0 and len(b2)>0:
                     b=np.unique(b2[:,2])
                 if len(b)>1:
-                    #print "ERROR: inconsistency in bond descriptions in topologies of %s and %s"%(self.chain[x],self.chain[x-1])
                     raise IOError("inconsistency in bond descriptions in topologies of %s and %s"%(self.chain[x],self.chain[x-1]))
                 if len(b)==0:
                     #print "ERROR: connection between %s and %s not found!"%(tailname,headname)
@@ -128,7 +127,6 @@ class Polymer(object):
                 try:
                     bond=self.ff.get_bond(b[0])
                 except:
-                    #print "ERROR: bond type %s not found in force field"%b[0]
                     raise IOError("bond type %s not found in force field"%b[0])
 
                 ###GET DIHEDRAL CURRENT###
@@ -143,9 +141,9 @@ class Polymer(object):
                     a=self._remove_prev_to_next(a_tmp) 
                     
                     #verify existence of all atoms in current molecule, if getting info from next one, and reformat
-                    for i in xrange(0,len(a),1):
+                    for i in range(0,len(a),1):
                                        
-                        for j in xrange(0,4,1):
+                        for j in range(0,4,1):
                             if "-" in  a[i,j]:
                                 atomname=a[i,j].split("-")[1]
                                 if atomname in m.atom:
@@ -158,7 +156,6 @@ class Polymer(object):
                                     
                 #check if a match was found in topologies of current or next molecule
                 if len(keep)==0:
-                    #print "no match found for dihedral!"
                     raise IOError("no match found for dihedral for forward hook involving atoms\n %s in %s and %s in %s!"%(tailname, m.topfile, headname, m_new.topfile))
   
   
@@ -166,7 +163,6 @@ class Polymer(object):
                 try:
                     dihedral_val_tail=self.ff.get_dihedral(a[keep[0],4])
                 except:
-                    #print "ERROR: dihedral type %s not found in force field"%a[0,4]          
                     raise IOError("dihedral type %s not found in force field"%a[keep[0],4])  
                 
                 #extract names of atoms forming angle and dihedral with head and tail
@@ -177,7 +173,6 @@ class Polymer(object):
                     anglename=a[keep[0],1]
                     dihedralname=a[keep[0],0]
                 else:
-                    #print "umm... a dihedral potential looks weird..."
                     IOError("umm... a dihedral potential looks weird...")
                 
                                
@@ -190,8 +185,8 @@ class Polymer(object):
                     keep=[]                    
                     a=m_new.topology.search_next_angle(tailname,headname,'-') #need double minus!
                     #verify existence of all atoms in current molecule, if getting info from next one
-                    for i in xrange(0,len(a),1):
-                        for j in xrange(0,3,1):
+                    for i in range(0,len(a),1):
+                        for j in range(0,3,1):
                             if "-" in  a[i,j]:
                                 atomname=a[i,j].split("-")[1]
                                 if  atomname in m.atom:
@@ -204,13 +199,11 @@ class Polymer(object):
                                               
                 #check that one solution was found
                 if len(keep)==0:
-                    #print "no match found for angle!"
                     raise IOError("no match found for angle for forward hook involving atoms\n %s in %s and %s in %s!"%(tailname, m.topfile, headname, m_new.topfile))
                 
                 try:
                     angle_val_tail=self.ff.get_angle(a[keep[0],3])
                 except:
-                    #print "ERROR: angle type %s not found in force field"%a[0,3]                
                     raise IOError("angle type %s not found in force field"%a[keep[0],3])         
 
                 
@@ -232,8 +225,8 @@ class Polymer(object):
                     a=self._remove_prev_to_next(a_tmp) 
                     
                     #verify existence of all atoms in current molecule, if getting info from next one
-                    for i in xrange(0,len(a),1):
-                        for j in xrange(0,4,1):
+                    for i in range(0,len(a),1):
+                        for j in range(0,4,1):
                             if "+" in a[i,j]:
                                 atomname=a[i,j].split("+")[1]
                                 if  atomname in m.atom:
@@ -246,13 +239,11 @@ class Polymer(object):
                                 
                 #check that one solution was found
                 if len(keep)==0:
-                    #print "no match found for angle!"
                     raise IOError("no match found for dihedral for backward hook involving atoms\n %s in %s and %s in %s!"%(headname, m_new.topfile,tailname, m.topfile))
                 
                 try:
                     dihedral_val_head=self.ff.get_dihedral(a[keep[0],4])
                 except:
-                    #print "ERROR: dihedral type %s not found in force field"%a[0,4]                
                     raise IOError("dihedral type %s not found in force field"%a[keep[0],4])
                 
                 #extract names of atoms forming angle and dihedral with head and tail
@@ -263,7 +254,6 @@ class Polymer(object):
                     anglename=a[keep[0],1]
                     dihedralname=a[keep[0],0]
                 else:
-                    #print a[0,:]
                     IOError("%s dihedral potential looks weird..."%a[keep[0],:])
                  
                 ###GET ANGLE NEXT###
@@ -274,8 +264,8 @@ class Polymer(object):
                     a=m.topology.search_prev_angle(tailname,headname,'+') #need double plus!
                     #verify existence of all atoms in current molecule, if getting info from next one
                     keep=[]
-                    for i in xrange(0,len(a),1):
-                        for j in xrange(0,3,1):
+                    for i in range(0,len(a),1):
+                        for j in range(0,3,1):
                             if "+" in  a[i,j]:
                                 atomname=a[i,j].split("+")[1]
                                 if atomname in m.atom:
@@ -293,7 +283,6 @@ class Polymer(object):
                 try:
                     angle_val_head=self.ff.get_angle(a[keep[0],3])
                 except:
-                    #print "ERROR: angle type %s not found in force field"%a[0,3]                
                     raise IOError("angle type %s not found in force field"%a[keep[0],3])
 
                 #compute hooking point position for next molecule
@@ -304,7 +293,7 @@ class Polymer(object):
             
             #ADD NEW CHAIN WITH CLASH DETECTION, IF IN GROMACS MODE###
             solved=False
-            for i in xrange(0,len(self.search_grid),1):
+            for i in range(0,len(self.search_grid),1):
                     
                 ###compute superimposition###
                 #prepare data to compute superimposition within previous tail and new head           
@@ -387,11 +376,11 @@ class Polymer(object):
     
         f_out = open("%s/%s.pdb"%(mypath, self.molname), 'w')
 
-        f_out.write("REMARK generated with Assemble.py, by Matteo Degiacomi and Valentina Erastova, 2014-2016\n")
+        f_out.write("REMARK generated with Assemble.py, by Matteo Degiacomi and Valentina Erastova, 2014-2018\n")
         f_out.write("REMARK sequence: %s\n"%self.chain)
 
         index=1    
-        for j in xrange(0,len(self.poly),1):
+        for j in range(0,len(self.poly),1):
             data_list=self.poly[j].mapping(self.poly[j].data)
             
             if typef=="pdb":
@@ -401,7 +390,7 @@ class Polymer(object):
                 tail_hook=""
                 head_hook=""
             
-            for i in xrange(0,len(data_list),1):
+            for i in range(0,len(data_list),1):
                 #create and write PDB line of non pseudoatoms
                 if data_list[i][0]!=head_hook and data_list[i][0]!=tail_hook:        
                 #if True:       
@@ -419,10 +408,10 @@ class Polymer(object):
         #count amount of atoms and extract all atomic coordinates
         cnt=0
         pos=[] #atom positions (need for easily computing box size)
-        for j in xrange(0,len(self.poly),1):
+        for j in range(0,len(self.poly),1):
             data_list=self.poly[j].mapping(self.poly[j].data)
             cnt+=len(data_list)
-            for i in xrange(0,len(data_list),1):
+            for i in range(0,len(data_list),1):
                 pos.append([data_list[i][5],data_list[i][6],data_list[i][7]]) #store atom position
 
         return np.array(pos)
@@ -432,8 +421,8 @@ class Polymer(object):
     def set_xyz(self,crds):
 
         cnt=0
-        for j in xrange(0,len(self.poly),1):        
-            for i in xrange(0, len(self.poly[j].data),1):
+        for j in range(0,len(self.poly),1):        
+            for i in range(0, len(self.poly[j].data),1):
                 self.poly[j].data[i][5]=crds[cnt,0]
                 self.poly[j].data[i][6]=crds[cnt,1]
                 self.poly[j].data[i][7]=crds[cnt,2]
@@ -447,10 +436,10 @@ class Polymer(object):
         #count amount of atoms and extract all atomic coordinates
         cnt=0
         pos=[] #atom positions (need for easily computing box size)
-        for j in xrange(0,len(self.poly),1):
+        for j in range(0,len(self.poly),1):
             data_list=self.poly[j].mapping(self.poly[j].data)
             cnt+=len(data_list)
-            for i in xrange(0,len(data_list),1):
+            for i in range(0,len(data_list),1):
                 pos.append([data_list[i][5]/10.0,data_list[i][6]/10.0,data_list[i][7]/10.0]) #store atom position
         
         self.p=self.get_xyz()/10.0
@@ -474,7 +463,7 @@ class Polymer(object):
         imp=[] #impropers topology
         
         index=1 #atom counter
-        for j in xrange(0,len(self.poly),1):
+        for j in range(0,len(self.poly),1):
 
             data_list=self.poly[j].mapping(self.poly[j].data)
 
@@ -494,7 +483,7 @@ class Polymer(object):
             imp.append(top.impropers)
             
             #@todo add helper lines in topology lines, defining what parameters are
-            for i in xrange(0,len(data_list),1):
+            for i in range(0,len(data_list),1):
                 #create and write line in gromacs format (.gro file)
                 #NOTE: the molecule is moved so that its minimal position is at the origin
                 #resname="%s%s"%(j+1,data_list[i][2])
@@ -538,15 +527,15 @@ class Polymer(object):
         
         #write atoms lines
         f_out.write("\n [ atoms ]\n")
-        for j in xrange(0,len(atom_top),1):
+        for j in range(0,len(atom_top),1):
             f_out.write("%6s%11s%7s%7s%7s%7s%11s%11s\n"%(atom_top[j,0],atom_top[j,1],atom_top[j,2],atom_top[j,3],atom_top[j,4],atom_top[j,5],int(float(atom_top[j,6])),atom_top[j,7]))
     
         #INSERT PARAMETERS VALUES FROM FORCE FIELD INSTEAD OF S-BN...
     
         #write bond lines
         f_out.write("\n [ bonds ] \n")
-        for j in xrange(0,len(b),1):
-            for x in xrange(0,len(b[j]),1):
+        for j in range(0,len(b),1):
+            for x in range(0,len(b[j]),1):
                 b0=self._get_index(atom_top,j,b[j][x][0])
                 b1=self._get_index(atom_top,j,b[j][x][1])
                 if b0!=False and b1!=False:
@@ -555,8 +544,8 @@ class Polymer(object):
 
         #write angles lines
         f_out.write("\n [ angles ] \n")
-        for j in xrange(0,len(a),1):
-            for x in xrange(0,len(a[j]),1):
+        for j in range(0,len(a),1):
+            for x in range(0,len(a[j]),1):
                 b0=self._get_index(atom_top,j,a[j][x][0])
                 b1=self._get_index(atom_top,j,a[j][x][1])
                 b2=self._get_index(atom_top,j,a[j][x][2])
@@ -566,8 +555,8 @@ class Polymer(object):
 
         #write dihedrals lines
         f_out.write("\n [ dihedrals ] \n")
-        for j in xrange(0,len(d),1):
-            for x in xrange(0,len(d[j]),1):
+        for j in range(0,len(d),1):
+            for x in range(0,len(d[j]),1):
                 b0=self._get_index(atom_top,j,d[j][x][0])
                 b1=self._get_index(atom_top,j,d[j][x][1])
                 b2=self._get_index(atom_top,j,d[j][x][2])
@@ -579,8 +568,8 @@ class Polymer(object):
          
         #write impropers lines
         #f_out.write("\n [ impropers ] \n")
-        for j in xrange(0,len(imp),1):
-            for x in xrange(0,len(imp[j]),1):
+        for j in range(0,len(imp),1):
+            for x in range(0,len(imp[j]),1):
                 b0=self._get_index(atom_top,j,imp[j][x][0])
                 b1=self._get_index(atom_top,j,imp[j][x][1])
                 b2=self._get_index(atom_top,j,imp[j][x][2])
@@ -602,8 +591,8 @@ class Polymer(object):
 
         a=[]
 
-        for i in xrange(0,180,step):
-            for j in xrange(0,i+step,step):
+        for i in range(0,180,step):
+            for j in range(0,i+step,step):
                 a.append([i,j])
                 if i>0:
                     a.append([-i,j])
@@ -618,7 +607,7 @@ class Polymer(object):
     #return true if clash detected, false otherwise
     def _clash_test(self,points1,points2):
         
-        for i in xrange(0,len(points1),1):
+        for i in range(0,len(points1),1):
             dists=np.sqrt(np.sum((points2-points1[i])**2,axis=1))
             if np.any(dists<self.clash_thresh):
                 return True
@@ -652,7 +641,7 @@ class Polymer(object):
 
         #compute moment of inertia tensor
         I0 = np.zeros((3,3), np.float64)
-        for i in xrange(0,len(points),1):
+        for i in range(0,len(points),1):
             mass = 1#self.mass[atom] / constants.Na
             I0[0,0] += mass * (points[i,1] * points[i,1] + points[i,2] * points[i,2])
             I0[1,1] += mass * (points[i,0] * points[i,0] + points[i,2] * points[i,2])
@@ -723,15 +712,15 @@ class Polymer(object):
 
     #test for connection between previous and next molecule. If existing, remove from pool
     def _remove_prev_to_next(self, a):
-        keep=[]
-        for i in xrange(0,len(a),1):    
-            prevmol=False
-            nextmol=False
-            for j in xrange(0,4,1):
-                if "-" in  a[i,j]:
-                    prevmol=True
-                if "+" in  a[i,j]:
-                    nextmol=True                                
+        keep = []
+        for i in range(0, len(a), 1):    
+            prevmol = False
+            nextmol = False
+            for j in range(0, 4, 1):
+                if "-" in a[i, j]:
+                    prevmol = True
+                if "+" in a[i, j]:
+                    nextmol = True                                
                 
             if not (prevmol and nextmol):
                 keep.append(i)
@@ -854,5 +843,5 @@ if __name__=="__main__":
     P=Polymer(D,F,"test","gromacs")
     P.chain="ccctttccCCt"
     
-    print P.get_mass()
+    print(P.get_mass())
     

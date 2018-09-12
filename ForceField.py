@@ -1,4 +1,4 @@
-# Copyright (c) 2014 Matteo Degiacomi and Valentina Erastova
+# Copyright (c) 2014-2018 Matteo Degiacomi and Valentina Erastova
 #
 # Assemble is free software ;
 # you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation ;
@@ -98,10 +98,10 @@ class ForceField(object):
         if len(self.fftype)==0:
             raise IOError("bond types not found in force field %s!"%fffile)
 
-        if len(self.bonded.keys())==0:
+        if len(self.bonded)==0:
             raise IOError("bonded parameters not found in force field %s!"%fffile)
         
-        if len(self.nonbonded.keys())==0:
+        if len(self.nonbonded)==0:
             raise IOError("non-bonded parameters not found in force field %s!"%fffile)
 
         if len(self.combination)==0:
@@ -137,7 +137,7 @@ if __name__=="__main__":
     
     #FF.load("C:\Users\Matteo\workspace\polymer\database\forcefield\trappe.ff")
     
-    print FF.bonded
+    print(FF.bonded)
     #print FF.nonbonded
     #print FF.combination
-    print FF.fftype
+    print(FF.fftype)
