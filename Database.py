@@ -1,4 +1,4 @@
-# Copyright (c) 2014 Matteo Degiacomi and Valentina Erastova
+# Copyright (c) 2014-2018 Matteo Degiacomi and Valentina Erastova
 #
 # Assemble is free software ;
 # you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation ;
@@ -30,10 +30,8 @@ class Database(object):
         #3. assemble home directory
         mypath=os.environ["ASSEMBLEPATH"].split(";")
 
-        #print mypath
-
         #find pdbfile 
-        fname=""
+        fname = ""
         if os.path.isabs(infile): #absolute path, just check existence
             if os.path.isfile(infile):
                 fname=infile
@@ -99,10 +97,10 @@ class Database(object):
                     else:
                         raise IOError("in gromacs mode, a topology file is expected for molecule %s!"%w[0])
 
-            except Exception, e:
+            except Exception as e:
                 raise IOError("Could not load topology file %s for molecule %s!\n%s"%(w[2],w[0],e))
 
-            if w[0] in self.molecules.keys():
+            if w[0] in list(self.molecules):
                 self.logger.warning("\n> WARNING: duplicate key %s in database %s. Overwriting."%(w[0], infile))
                             
             self.molecules[w[0]]=m
@@ -112,21 +110,21 @@ class Database(object):
             
     def add(self,code,pdb,topology=-1):
         
-        if code in self.molecules.keys():
+        if code in list(self.molecules):
             self.logger.warning("\n> WARNING: residue %s already present in database. Overwriting."%code)
         
         try:
             self.logger.info(">> loading PDB %s"%pdb)
             m=Molecule()
             m.import_pdb(pdb, "gromacs")
-        except Exception,e:
+        except Exception as e:
             raise IOError(e)
         
         try:
             if topology!=-1:
                 self.logger.info(">> loading topology %s"%topology)
                 m.import_topology(topology)
-        except Exception, e:
+        except Exception as e:
             raise IOError(e)
         
         self.molecules[code]=m
@@ -143,7 +141,7 @@ class Database(object):
         
         fout=open(filename,"w")
         
-        for x in self.molecules.keys():
+        for x in list(self.molecules):
             line="%s %s %s\n"%(x,self.molecules[x].pdbfile,self.molecules[x].topfile)
             fout.write(line)
             

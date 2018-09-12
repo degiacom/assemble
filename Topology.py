@@ -1,4 +1,4 @@
-# Copyright (c) 2014 Matteo Degiacomi and Valentina Erastova
+# Copyright (c) 2014-2018 Matteo Degiacomi and Valentina Erastova
 #
 # Assemble is free software ;
 # you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation ;
@@ -68,11 +68,11 @@ class Topology(object):
             
         f.close()
         
-        self.bonds=np.array(b).astype("S10")
-        self.angles=np.array(a).astype("S10")
-        self.dihedrals=np.array(d).astype("S10")
-        self.impropers=np.array(i).astype("S10")
-        self.mapping=np.array(m).astype("S10")
+        self.bonds=np.array(b).astype(str)
+        self.angles=np.array(a).astype(str)
+        self.dihedrals=np.array(d).astype(str)
+        self.impropers=np.array(i).astype(str)
+        self.mapping=np.array(m).astype(str)
         #self.replace_nter=np.array(sn).astype("S10") #nter replacements
         #self.replace_cter=np.array(sc).astype("S10") #cter replacements
 
@@ -94,7 +94,7 @@ class Topology(object):
         else:
             raise IOError("target should be equal to nterminal or cterminal")
     
-        for i in xrange(0,len(subst),1):
+        for i in range(0,len(subst),1):
 
             n=subst[i]
 
@@ -139,11 +139,8 @@ class Topology(object):
         r=self.bonds[np.intersect1d(test1,test2),:]
 
         return r
-        #if len(r)==1:
-        #    return r[0]
-        #else:
-        #    return []
-        
+    
+      
     #search bond type connecting current molecule with previous one                
     def search_prev_bond(self,a,b):
         #a is current molecule, b next one        
@@ -154,10 +151,6 @@ class Topology(object):
 
         return r
 
-        #if len(r)>0:
-        #    return r[0]
-        #else:
-        #    return []
         
     #search angle type connecting current molecule with next one     
     def search_next_angle(self,a,b,sign):
@@ -171,10 +164,9 @@ class Topology(object):
             r=filter(lambda x: np.any(x=="-%s"%a) and np.any(x==b) and len([elem for elem in x[0:3] if "-" in elem])==2, self.angles)
 
         else:
-            #print 
             raise IOError("ERROR: sign must be - or +")
   
-        return np.array(r)
+        return np.array(list(r))
         
     #search angle type connecting current molecule with previous one     
     def search_prev_angle(self,a,b,sign):
@@ -188,10 +180,9 @@ class Topology(object):
             r=filter(lambda x: np.any(x=="+%s"%b) and np.any(x==a) and len([elem for elem in x[0:3] if "+" in elem])==2, self.angles)
 
         else:
-            #print "ERROR: sign must be - or +"
             raise IOError("ERROR: sign must be - or +")
   
-        return np.array(r)            
+        return np.array(list(r))            
         
     #search dihedral type connecting current molecule with next one     
     def search_next_dihedral(self,a,b,sign):
@@ -205,10 +196,9 @@ class Topology(object):
             r=filter(lambda x: np.any(x=="+%s"%b) and np.any(x==a) and len([elem for elem in x[0:4] if "+" in elem])==1, self.dihedrals)
 
         else:
-            #print "ERROR: sign must be - or +"
             raise IOError("ERROR: sign must be - or +")
 
-        return np.array(r)
+        return np.array(list(r))
         
     #search dihedral type connecting current molecule with previous one     
     def search_prev_dihedral(self,a,b,sign):
@@ -222,10 +212,9 @@ class Topology(object):
             r=filter(lambda x: np.any(x=="+%s"%b) and np.any(x==a) and len([elem for elem in x[0:4] if "+" in elem])==3, self.dihedrals)
 
         else:
-            #print "ERROR: sign must be - or +"
             raise IOError("ERROR: sign must be - or +")
 
-        return np.array(r)
+        return np.array(list(r))
 
 
     def check_existence(self,atom):
@@ -242,14 +231,14 @@ if __name__=="__main__":
     #Top.load("database/vinyl-PBD-monomer.txt")
     Top.load("database/cis-PI-monomer.txt")    
        
-    #print Top.search_prev_dihedral('ZZ','AA','-')
-    #print Top.search_next_dihedral('ZZ','AA','+')
+    #print(Top.search_prev_dihedral('ZZ','AA','-'))
+    #print(Top.search_next_dihedral('ZZ','AA','+'))
   
     Top.make_terminal("nterminal")
     Top.make_terminal("cterminal")
     
-    print Top.mapping    
-    print Top.bonds
-    print Top.angles
-    print Top.dihedrals
+    print(Top.mapping)    
+    print(Top.bonds)
+    print(Top.angles)
+    print(Top.dihedrals)
     

@@ -1,4 +1,4 @@
-# Copyright (c) 2014 Matteo Degiacomi and Valentina Erastova
+# Copyright (c) 2014-2018 Matteo Degiacomi and Valentina Erastova
 #
 # Assemble is free software ;
 # you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation ;
@@ -29,12 +29,12 @@ def make_chain(length, percentage):
         c=""
         #make roulette array
         roulette=[percentage[0][1]]
-        for r in xrange(1,len(percentage),1):
+        for r in range(1,len(percentage),1):
             roulette.append(roulette[r-1]+percentage[r][1])
     
         #pick a random monomer according to desired percentages
         counter=np.zeros(len(roulette))
-        for x in xrange(0,length,1):
+        for x in range(0,length,1):
             rnd=np.random.rand(1)[0]*100        
             index=0
             while True:
@@ -50,7 +50,7 @@ def make_chain(length, percentage):
         counter*=100.0
         logger.info(">> chain: %s"%c)
         logger.info(">> monomer percentages:")
-        for x in xrange(0,len(counter),1):
+        for x in range(0,len(counter),1):
             logger.info(">> %s: %s percent"%(percentage[x][0],counter[x]))
             
         return c
@@ -59,7 +59,7 @@ def make_chain(length, percentage):
 def run(infile):
      
     if os.path.isfile(infile)!=1 :
-        print "ERROR: setup file not found!"
+        print("ERROR: setup file not found!")
         sys.exit(1)
     
     #parse input file
@@ -76,11 +76,11 @@ def run(infile):
         try:
             os.makedirs(folder)
         except:
-            print "\n> could not create output folder %s!"%folder
+            print("\n> could not create output folder %s!"%folder)
             return
 
     else:
-        print "\n> WARNING: found folder %s. Existing files will be overwritten..."%folder
+        print("\n> WARNING: found folder %s. Existing files will be overwritten..."%folder)
    
     #prepare logger
     logname='%s/%s.log'%(folder,params.output)
@@ -111,7 +111,7 @@ def run(infile):
     if params.db!="":
         try:
             db.load(params.db,params.mode)
-        except Exception, e:
+        except Exception as e:
             logger.exception(e)
             fh.close()
             logger.removeHandler(fh)
@@ -159,7 +159,7 @@ def run(infile):
             
             polymers.append(poly)
             
-        except Exception, e:
+        except Exception as e:
             logger.exception(e)
             fh.close()
             logger.removeHandler(fh)
