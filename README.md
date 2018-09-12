@@ -8,7 +8,7 @@ Executing *Assemble!* from source requires Python 2.7 or >3.0, as well as numpy 
 
 # Reference
 When using *Assemble!* in your work, please cite the following publication:
-M. T. Degiacomi, V. Erastova, M. R. Wilson, Easy setup of molecular dynamics simulations of polymeric mixtures with Assemble!, Computer Physics Communications, Volume 202, 304�309, 2016
+M. T. Degiacomi, V. Erastova, M. R. Wilson, Easy setup of molecular dynamics simulations of polymeric mixtures with Assemble!, Computer Physics Communications, Volume 202, 304-309, 2016
 
 # Contact
 For any questions, please contact matteo.degiacomi@gmail.com or valentina.erastova@gmail.com
