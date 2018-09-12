@@ -547,44 +547,44 @@ class Polymer(object):
                     f_out.write("%5s %6s %6s %8s\n"%(b0,b1,self.ff.fftype[0],vals_text))
 
         if self.nrxl>1:
-        #write angles lines
-        f_out.write("\n [ angles ] \n")
-        for j in range(0,len(a),1):
-            for x in range(0,len(a[j]),1):
-                b0=self._get_index(atom_top,j,a[j][x][0])
-                b1=self._get_index(atom_top,j,a[j][x][1])
-                b2=self._get_index(atom_top,j,a[j][x][2])
-                if b0!=False and b1!=False and b2!=False:
-                    vals_text='  '.join(self.ff.bonded[a[j][x][3]].astype(str))
-                    f_out.write("%5s %6s %6s %6s %8s\n"%(b0,b1,b2,self.ff.fftype[1],vals_text))
+            #write angles lines
+            f_out.write("\n [ angles ] \n")
+            for j in range(0,len(a),1):
+                for x in range(0,len(a[j]),1):
+                    b0=self._get_index(atom_top,j,a[j][x][0])
+                    b1=self._get_index(atom_top,j,a[j][x][1])
+                    b2=self._get_index(atom_top,j,a[j][x][2])
+                    if b0!=False and b1!=False and b2!=False:
+                        vals_text='  '.join(self.ff.bonded[a[j][x][3]].astype(str))
+                        f_out.write("%5s %6s %6s %6s %8s\n"%(b0,b1,b2,self.ff.fftype[1],vals_text))
 
         if self.nrxl>2:
-        #write dihedrals lines
-        f_out.write("\n [ dihedrals ] \n")
-        for j in range(0,len(d),1):
-            for x in range(0,len(d[j]),1):
-                b0=self._get_index(atom_top,j,d[j][x][0])
-                b1=self._get_index(atom_top,j,d[j][x][1])
-                b2=self._get_index(atom_top,j,d[j][x][2])
-                b3=self._get_index(atom_top,j,d[j][x][3])
-                           
-                if b0!=False and b1!=False and b2!=False and b3!=0:
-                    vals_text='  '.join(self.ff.bonded[d[j][x][4]].astype(str))
-                    f_out.write("%5s %6s %6s %6s %6s %8s\n"%(b0,b1,b2,b3, self.ff.fftype[2], vals_text))
+            #write dihedrals lines
+            f_out.write("\n [ dihedrals ] \n")
+            for j in range(0,len(d),1):
+                for x in range(0,len(d[j]),1):
+                    b0=self._get_index(atom_top,j,d[j][x][0])
+                    b1=self._get_index(atom_top,j,d[j][x][1])
+                    b2=self._get_index(atom_top,j,d[j][x][2])
+                    b3=self._get_index(atom_top,j,d[j][x][3])
+                               
+                    if b0!=False and b1!=False and b2!=False and b3!=0:
+                        vals_text='  '.join(self.ff.bonded[d[j][x][4]].astype(str))
+                        f_out.write("%5s %6s %6s %6s %6s %8s\n"%(b0,b1,b2,b3, self.ff.fftype[2], vals_text))
 
         if self.nrxl>2:
-        #write impropers lines
-        #f_out.write("\n [ impropers ] \n")
-        for j in range(0,len(imp),1):
-            for x in range(0,len(imp[j]),1):
-                b0=self._get_index(atom_top,j,imp[j][x][0])
-                b1=self._get_index(atom_top,j,imp[j][x][1])
-                b2=self._get_index(atom_top,j,imp[j][x][2])
-                b3=self._get_index(atom_top,j,imp[j][x][3])
-                           
-                if b0!=False and b1!=False and b2!=False and b3!=0:
-                    vals_text='  '.join(self.ff.bonded[imp[j][x][4]].astype(str))
-                    f_out.write("%5s %6s %6s %6s %6s %8s\n"%(b0,b1,b2,b3,self.ff.fftype[3],vals_text))
+            #write impropers lines
+            #f_out.write("\n [ impropers ] \n")
+            for j in range(0,len(imp),1):
+                for x in range(0,len(imp[j]),1):
+                    b0=self._get_index(atom_top,j,imp[j][x][0])
+                    b1=self._get_index(atom_top,j,imp[j][x][1])
+                    b2=self._get_index(atom_top,j,imp[j][x][2])
+                    b3=self._get_index(atom_top,j,imp[j][x][3])
+                               
+                    if b0!=False and b1!=False and b2!=False and b3!=0:
+                        vals_text='  '.join(self.ff.bonded[imp[j][x][4]].astype(str))
+                        f_out.write("%5s %6s %6s %6s %6s %8s\n"%(b0,b1,b2,b3,self.ff.fftype[3],vals_text))
 
 
         f_out.write("\n#ifdef POSRES\n#include \"posre.itp\"\n#endif\n")
